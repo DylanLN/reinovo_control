@@ -1,0 +1,25 @@
+<launch>
+    <!--机器人模型-->
+	<param name="robot_description" textfile="$(find oryxbot_description)/urdf/oryxbot_description.urdf" />
+
+	<node
+		name="joint_state_publisher"
+		pkg="joint_state_publisher"
+		type="joint_state_publisher" />
+	<node
+		name="robot_state_publisher"
+		pkg="robot_state_publisher"
+		type="state_publisher" />
+
+	<!-- rviz -->
+	<node pkg="rviz" type="rviz" name="reinovo_rviz" required="true" args="-d $(find reinovo_control)/rviz/reinovo.rviz" output="screen"/>
+
+    <!--json 节点-->
+	<arg name="custom_param_file" default="$(find reinovo_control)/param/action.yaml"/>
+	<arg name="pkg_path"  default=" $(find reinovo_control)"/>
+	<node name="json_file" pkg="reinovo_control" type="json_file.py" output="screen" >
+		<rosparam file="$(arg custom_param_file)" command="load" />
+		<param name="map_file" value="$(arg pkg_path)"/>
+	</node>
+
+</launch>

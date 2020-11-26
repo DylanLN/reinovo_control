@@ -1,0 +1,22 @@
+<launch>
+    <group ns="robot_slam">
+	    <node pkg="reinovo_control" type="blank" name="blank" output="screen" required="true"/>
+	</group>
+	<!--以上勿动-->
+
+  <!-- Arguments -->
+  <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration, rrt_exploration]"/>
+  <arg name="configuration_basename" default="oryxbot_lds_2d.lua" />
+  <arg name="open_rviz" default="false"/>
+
+  <!-- laser -->  
+
+
+  <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
+  <include file="$(find oryxbot_slam)/launch/oryxbot_$(arg slam_methods).launch" >   
+    <arg name="configuration_basename" value="$(arg configuration_basename)" />
+  </include>
+
+
+
+</launch>

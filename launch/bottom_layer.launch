@@ -1,0 +1,3 @@
+<launch>
+	<node pkg="reinovo_control" type="bottom_layer" name="bottom_layer" output="screen"/>
+</launch>

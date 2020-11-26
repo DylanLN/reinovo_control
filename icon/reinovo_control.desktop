@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=ReinovoControl
+Name[zh_CN]=ReinovoControl 
+Comment=Thunderbird Webmail Client
+Exec=/home/ln/ros_workspace/ceshi_ws1/src/reinovo_control/icon/reinovo_control.sh
+Icon=/home/ln/ros_workspace/ceshi_ws1/src/reinovo_control/icon/reinovo_control.png
+Terminal=true
+StartupNotify=false
+Type=Application
+Categories=Application;Communication

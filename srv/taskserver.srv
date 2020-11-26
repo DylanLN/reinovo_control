@@ -1,0 +1,4 @@
+reinovo_control/task[] task
+---
+bool success
+string message

@@ -1,0 +1,39 @@
+fun: 7
+action0: 
+  name: sleep
+  num: 1
+  param0: time
+action1: 
+  name: pick_ar
+  num: 5
+  param0: number
+  param1: mode
+  param2: position0
+  param3: position1
+  param4: position2
+action2: 
+  name: goto_charge
+  num: 1
+  param0: charge
+action3: 
+  name: relative_move
+  num: 2
+  param0: mode
+  param1: relative_move
+action4: 
+  name: goto_position
+  num: 3
+  param0: x
+  param1: y
+  param2: z
+action5: 
+  name: set_zero
+  num: 4
+  param0: x
+  param1: y
+  param2: z
+  param3: r
+action6: 
+  name: Track
+  num: 1
+  param0: track

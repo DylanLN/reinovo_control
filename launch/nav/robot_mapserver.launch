@@ -1,0 +1,12 @@
+<launch>
+    <group ns="robot_map">
+        <node pkg="reinovo_control" type="blank" name="blank" output="screen" required="true"/>
+    </group>
+
+    <!--  加载的栅格地图的名称和路径（名字即为上一实验中的filename）  --> 
+    <arg name="map_file"  default="room.yaml"/> <!-- willowgarage_world -->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find reinovo_control)/maps/$(arg map_file)">
+    <param name="frame_id" value="/map"/>
+    </node>
+
+</launch>

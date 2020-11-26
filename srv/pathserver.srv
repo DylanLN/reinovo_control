@@ -1,0 +1,4 @@
+reinovo_control/path[] path
+---
+bool success
+string message

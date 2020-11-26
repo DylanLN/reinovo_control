@@ -1,0 +1,4 @@
+reinovo_control/nav_goal[] navgoal
+---
+bool success
+string message

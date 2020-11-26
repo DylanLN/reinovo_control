@@ -1,0 +1,35 @@
+task:
+- action:
+  - name: Track
+    number: 1
+    param: !!python/tuple [0.0]
+    param_name: [track]
+  - name: relative_move
+    number: 2
+    param: !!python/tuple [0.0, 0.10000000149011612]
+    param_name: [mode, relative_move]
+  - name: pick_ar
+    number: 5
+    param: !!python/tuple [3.0, 0.0, 50.0, -260.0, 50.0]
+    param_name: [number, mode, position0, position1, position2]
+  - name: goto_position
+    number: 3
+    param: !!python/tuple [30.0, -160.0, 150.0]
+    param_name: [x, y, z]
+  - name: pick_ar
+    number: 5
+    param: !!python/tuple [3.0, 1.0, 35.0, 218.0, 45.0]
+    param_name: [number, mode, position0, position1, position2]
+  - name: relative_move
+    number: 2
+    param: !!python/tuple [0.0, -0.30000001192092896]
+    param_name: [mode, relative_move]
+  name: cnc2
+  step: 6
+- action:
+  - name: goto_charge
+    number: 1
+    param: !!python/tuple [3.0]
+    param_name: [charge]
+  name: charg
+  step: 1

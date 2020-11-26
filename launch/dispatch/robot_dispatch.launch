@@ -1,0 +1,17 @@
+<launch>
+	<arg name= "pathname" default="oryx1"/>
+	<arg name="custom_param_file1" default="$(find reinovo_control)/param/goal.yaml"/>
+	<arg name="custom_param_file2" default="$(find reinovo_control)/param/path.yaml"/>
+	<arg name="custom_param_file3" default="$(find reinovo_control)/param/task.yaml"/>
+	<node pkg="reinovo_control" type="center" name="center" output="screen">
+		<param name="path_name" value="$(arg pathname)"/>
+		<rosparam file="$(arg custom_param_file1)" command="load" />
+		<rosparam file="$(arg custom_param_file2)" command="load" />
+		<rosparam file="$(arg custom_param_file3)" command="load" />
+	</node>
+
+	<!--以下勿动-->
+    <group ns="robot_dispatch">
+	    <node pkg="reinovo_control" type="blank" name="blank" output="screen" required="true"/>
+	</group>
+</launch>

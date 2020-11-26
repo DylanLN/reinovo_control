@@ -1,0 +1,5 @@
+uint8 mode
+string message
+---
+bool success
+string message

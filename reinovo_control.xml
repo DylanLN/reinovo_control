@@ -1,0 +1,9 @@
+<library path="lib/libreinovo_control">
+  <class name="ReinovoControl"
+         type="ReinovoControl"
+         base_class_type="rviz::Panel">
+    <description>
+     
+    </description>
+  </class>
+</library>
