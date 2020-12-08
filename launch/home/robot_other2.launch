@@ -1,0 +1,12 @@
+<launch>
+    <group ns="robot_other2">
+	    <node pkg="reinovo_control" type="blank" name="blank" output="screen" required="true"/>
+	</group>
+	<!--以上勿动-->
+
+	<include file="$(find ar_pose)/launch/ar_base.launch"/>
+	<include file="$(find auto_charging)/launch/auto_charging.launch"/>
+	<node pkg="oryxbot_interaction" type="oryxbot_navi" name="oryxbot_navi" output="screen"/>
+
+
+</launch>

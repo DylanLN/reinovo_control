@@ -1,0 +1,9 @@
+<launch>
+    <group ns="robot_other3">
+	    <node pkg="reinovo_control" type="blank" name="blank" output="screen" required="true"/>
+	</group>
+	<!--以上勿动-->
+
+
+
+</launch>

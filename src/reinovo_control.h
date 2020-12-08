@@ -73,6 +73,7 @@ public:
     
 
     ros::NodeHandle nh_;
+    ros::NodeHandle n;
     ros::ServiceClient driver_client;
     ros::ServiceClient slam_client;
     ros::ServiceClient map_client;
@@ -156,9 +157,9 @@ public:
     uint8_t flag_driver;
     uint8_t flag_slam;
     uint8_t flag_openall;
-    uint8_t flag_other1,flag_other2,flag_other3;
+    uint8_t flag_other[3];
     ros::ServiceClient save_map;
-    
+    string strother[3];
 
     //Teleop
     uint8_t flag_speed;

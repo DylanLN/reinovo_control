@@ -167,7 +167,7 @@ void ReinovoControl::fopen_all()
 //other1
 void ReinovoControl::fother1()
 {
-    if(flag_other1 == 0){
+    if(flag_other[0] == 0){
         reinovo_control::ask srv;
         srv.request.mode = 1;
         srv.request.message = "other1";
@@ -176,7 +176,7 @@ void ReinovoControl::fother1()
             if (srv.response.success == true)
             {
                 ui->other1->setText("关闭");
-                flag_other1=1;
+                flag_other[0]=1;
             }else{
                 ui->other1->setText("错误");                
             }
@@ -184,7 +184,7 @@ void ReinovoControl::fother1()
         }else{
             ui->total_output->appendPlainText(QString::fromStdString(get_time())+"未连接到底层节点");
         }
-    }else if(flag_other1 == 1){
+    }else if(flag_other[0] == 1){
         reinovo_control::ask srv;
         srv.request.mode = 0;
         srv.request.message = "other1";
@@ -192,8 +192,8 @@ void ReinovoControl::fother1()
         {
             if (srv.response.success == true)
             {
-                ui->other1->setText("其他模块1");
-                flag_other1=0;
+                ui->other1->setText(QString::fromStdString(strother[0]));
+                flag_other[0]=0;
             }else{
                 ui->other1->setText("错误");                
             }
@@ -207,27 +207,81 @@ void ReinovoControl::fother1()
 //other2
 void ReinovoControl::fother2()
 {
-    if(flag_other2 == 0){
-        ui->other2->setText("关闭");
-        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"其他模块2 关闭");
-        flag_other2=1;
-    }else if(flag_other2 == 1){
-        ui->other2->setText("其他模块2");
-        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"其他模块2 打开");
-        flag_other2=0;
+    if(flag_other[1] == 0){
+
+        reinovo_control::ask srv;
+        srv.request.mode = 1;
+        srv.request.message = "other2";
+        if (key_client.call(srv))
+        {
+            if (srv.response.success == true)
+            {
+                ui->other2->setText("关闭");
+                flag_other[1]=1;
+            }else{
+                ui->other2->setText("错误");                
+            }
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+QString::fromStdString(srv.response.message));
+        }else{
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"未连接到底层节点");
+        }
+    }else if(flag_other[1] == 1){
+        reinovo_control::ask srv;
+        srv.request.mode = 0;
+        srv.request.message = "other2";
+        if (key_client.call(srv))
+        {
+            if (srv.response.success == true)
+            {
+                ui->other2->setText(QString::fromStdString(strother[1]));
+                flag_other[1]=0;
+            }else{
+                ui->other2->setText("错误");                
+            }
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+QString::fromStdString(srv.response.message));
+        }else{
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"未连接到底层节点");
+        }
     }
 }
 //other3
 void ReinovoControl::fother3()
 {
-    if(flag_other3 == 0){
-        ui->other3->setText("关闭");
-        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"其他模块3 关闭");
-        flag_other3=1;
-    }else if(flag_other3 == 1){
-        ui->other3->setText("其他模块3");
-        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"其他模块3 打开");
-        flag_other3=0;
+    if(flag_other[2] == 0){
+
+        reinovo_control::ask srv;
+        srv.request.mode = 1;
+        srv.request.message = "other3";
+        if (key_client.call(srv))
+        {
+            if (srv.response.success == true)
+            {
+                ui->other3->setText("关闭");
+                flag_other[2]=1;
+            }else{
+                ui->other3->setText("错误");                
+            }
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+QString::fromStdString(srv.response.message));
+        }else{
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"未连接到底层节点");
+        }
+    }else if(flag_other[2] == 1){
+        reinovo_control::ask srv;
+        srv.request.mode = 0;
+        srv.request.message = "other3";
+        if (key_client.call(srv))
+        {
+            if (srv.response.success == true)
+            {
+                ui->other3->setText(QString::fromStdString(strother[0]));
+                flag_other[2]=0;
+            }else{
+                ui->other3->setText("错误");                
+            }
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+QString::fromStdString(srv.response.message));
+        }else{
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"未连接到底层节点");
+        }
     }
 }
 
@@ -273,7 +327,6 @@ void ReinovoControl::fspeed_enable()
         flag_speed=0;
         ui->total_output->appendPlainText(QString::fromStdString(get_time())+"速度失能");
     }
-
 }
 
 //发布+vx指令
@@ -482,6 +535,18 @@ void ReinovoControl::fdelete_target()
         ROS_INFO_STREAM("curIndex:" << curIndex);
         ui->total_output->appendPlainText(QString::fromStdString(get_time())+"已删除 " +QString::fromStdString(v_navgoal[curIndex].name));
         v_navgoal.erase(v_navgoal.begin()+curIndex);
+        reinovo_control::navgoalserver srv;
+        for (size_t i = 0; i < v_navgoal.size(); i++)
+        {
+            ROS_INFO_STREAM("nav goal name:" << v_navgoal[i].name);
+            srv.request.navgoal.push_back(v_navgoal[i]);
+        }
+        if (save_navgoal.call(srv))
+        {
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"已删除 ");
+        }else{
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"错误：未连接到jsonfile节点！");   
+        }
     }
 }
 //获取姿态
@@ -1298,6 +1363,15 @@ ReinovoControl::ReinovoControl(QWidget* parent):rviz::Panel(parent),ui(new Ui::F
     connect(ui->other1, SIGNAL(clicked()), this, SLOT(fother1()));      //other1
     connect(ui->other2, SIGNAL(clicked()), this, SLOT(fother2()));      //other1
     connect(ui->other3, SIGNAL(clicked()), this, SLOT(fother3()));      //other1
+
+    n.param<string>("other1", strother[0], "其他模块1");
+    n.param<string>("other2", strother[1], "其他模块2");
+    n.param<string>("other3", strother[2], "其他模块3");
+    ui->other1->setText(QString::fromStdString(strother[0]));
+    ui->other2->setText(QString::fromStdString(strother[1]));
+    ui->other3->setText(QString::fromStdString(strother[2]));
+
+
     //Teleop
     connect(ui->speed_enable, SIGNAL(clicked()), this, SLOT(fspeed_enable()));   //速度使能
     ui->vx_cmd->setSuffix("m/s");       //设置后缀
@@ -1376,9 +1450,9 @@ ReinovoControl::ReinovoControl(QWidget* parent):rviz::Panel(parent),ui(new Ui::F
     flag_driver=0;
     flag_slam=0;
     flag_openall=0;
-    flag_other1=0;
-    flag_other2=0;
-    flag_other3=0;
+    flag_other[0]=0;
+    flag_other[1]=0;
+    flag_other[2]=0;
     //Teleop
     flag_speed=0;
     //导航
@@ -1425,7 +1499,7 @@ ReinovoControl::~ReinovoControl()
     uithread.interrupt();
     delete timer_;
     delete ui;
-    ROS_DEBUG_STREAM("Destory");
+    ROS_DEBUG_STREAM("reinovo control已关闭");
 }
 
 #include "pluginlib/class_list_macros.h"

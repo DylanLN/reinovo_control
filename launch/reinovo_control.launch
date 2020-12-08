@@ -14,6 +14,11 @@
 	<!-- rviz -->
 	<node pkg="rviz" type="rviz" name="reinovo_rviz" required="true" args="-d $(find reinovo_control)/rviz/reinovo.rviz" output="screen"/>
 
+	<param name="other1" value="手臂"/>
+	<param name="other2" value="自主充电"/>
+	<param name="other3" value="其他"/>
+
+
     <!--json 节点-->
 	<arg name="custom_param_file" default="$(find reinovo_control)/param/action.yaml"/>
 	<arg name="pkg_path"  default=" $(find reinovo_control)"/>

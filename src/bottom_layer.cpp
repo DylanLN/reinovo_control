@@ -59,7 +59,7 @@ public:
     ros::ServiceClient shutdown_slam;
     ros::ServiceClient shutdown_bringup;
     ros::ServiceClient shutdown_all;
-    ros::ServiceClient shutdown_other1;
+    ros::ServiceClient shutdown_other1,shutdown_other2,shutdown_other3;
     ros::ServiceClient shutdown_nav;
     ros::ServiceClient shutdown_dispatch;
 
@@ -85,7 +85,7 @@ public:
     uint8_t flag_bringup;
     uint8_t flag_slam;
     uint8_t flag_all;
-    uint8_t flag_other1;
+    uint8_t flag_other[3];
     uint8_t flag_nav;
     uint8_t flag_dispatch;
 
@@ -200,35 +200,101 @@ bool BootomLayer::key_callback(reinovo_control::ask::Request &req,
             }
         }
     }else if (req.message == "other1"){
-        if (flag_other1 == 0 && req.mode == 1){
+        if (flag_other[0] == 0 && req.mode == 1){
             if(system("roslaunch reinovo_control robot_other1.launch&")<0){
-                flag_other1 = 10;
+                flag_other[0] = 10;
                 res.success = false;
                 res.message = "system(其他模块1) errorr 开启失败";
                 //ROS_ERROR("system() errorr");
             }else{
-                flag_other1 = 1;
+                flag_other[0] = 1;
                 res.message = "其他模块1 正在开启";
                 res.success = true;
             }
-        }else if(flag_other1 == 1 && req.mode == 0){
+        }else if(flag_other[0] == 1 && req.mode == 0){
             reinovo_control::ask srv;
             srv.request.mode = true;
             if (shutdown_other1.call(srv))
             {
                 if (srv.response.success == true)
                 {
-                    flag_other1 = 0;
+                    flag_other[0] = 0;
                     res.message = "其他模块1 正在关闭";
                     res.success = true;
                 }else{
-                    flag_other1 = 10;
+                    flag_other[0] = 10;
                     res.message = "其他模块1 关闭失败";
                     res.success = false;
                 }
             }else{
-                flag_other1 = 0;
+                flag_other[0] = 0;
                 res.message = "其他模块1 未连接，可能已关闭";
+                res.success = true;
+            }
+        }
+    }else if (req.message == "other2"){
+        if (flag_other[1] == 0 && req.mode == 1){
+            if(system("roslaunch reinovo_control robot_other2.launch&")<0){
+                flag_other[1] = 10;
+                res.success = false;
+                res.message = "system(其他模块2) errorr 开启失败";
+                //ROS_ERROR("system() errorr");
+            }else{
+                flag_other[1] = 1;
+                res.message = "其他模块2 正在开启";
+                res.success = true;
+            }
+        }else if(flag_other[1] == 1 && req.mode == 0){
+            reinovo_control::ask srv;
+            srv.request.mode = true;
+            if (shutdown_other2.call(srv))
+            {
+                if (srv.response.success == true)
+                {
+                    flag_other[1] = 0;
+                    res.message = "其他模块2 正在关闭";
+                    res.success = true;
+                }else{
+                    flag_other[1] = 10;
+                    res.message = "其他模块2 关闭失败";
+                    res.success = false;
+                }
+            }else{
+                flag_other[1] = 0;
+                res.message = "其他模块2 未连接，可能已关闭";
+                res.success = true;
+            }
+        }
+    }else if (req.message == "other3"){
+        if (flag_other[2] == 0 && req.mode == 1){
+            if(system("roslaunch reinovo_control robot_other3.launch&")<0){
+                flag_other[2] = 10;
+                res.success = false;
+                res.message = "system(其他模块3) errorr 开启失败";
+                //ROS_ERROR("system() errorr");
+            }else{
+                flag_other[2] = 1;
+                res.message = "其他模块3 正在开启";
+                res.success = true;
+            }
+        }else if(flag_other[2] == 1 && req.mode == 0){
+            reinovo_control::ask srv;
+            srv.request.mode = true;
+            if (shutdown_other3.call(srv))
+            {
+                if (srv.response.success == true)
+                {
+                    flag_other[2] = 0;
+                    res.message = "其他模块3 正在关闭";
+                    res.success = true;
+                }else{
+                    flag_other[2] = 10;
+                    res.message = "其他模块3 关闭失败";
+                    res.success = false;
+                }
+            }else{
+                flag_other[2] = 0;
+                res.message = "其他模块3 未连接，可能已关闭";
                 res.success = true;
             }
         }
@@ -352,11 +418,16 @@ BootomLayer::BootomLayer()
     flag_nav=0;
     flag_dispatch=0;
     flag_all = 0;
+    flag_other[0]=0;
+    flag_other[1]=0;
+    flag_other[2]=0;
     key_server=nh.advertiseService("key_server",&BootomLayer::key_callback,this);
     shutdown_slam = nh.serviceClient<reinovo_control::ask>("/robot_slam/shutdown");
     shutdown_bringup = nh.serviceClient<reinovo_control::ask>("/robot_bringup/shutdown");
     shutdown_all = nh.serviceClient<reinovo_control::ask>("/robot_all/shutdown");
     shutdown_other1 = nh.serviceClient<reinovo_control::ask>("/robot_other1/shutdown");
+    shutdown_other2 = nh.serviceClient<reinovo_control::ask>("/robot_other2/shutdown");
+    shutdown_other3 = nh.serviceClient<reinovo_control::ask>("/robot_other3/shutdown");
     shutdown_nav = nh.serviceClient<reinovo_control::ask>("/robot_nav/shutdown");
     shutdown_dispatch = nh.serviceClient<reinovo_control::ask>("/robot_dispatch/shutdown");
     getpose_server  =   nh.advertiseService("get_pose",&BootomLayer::getpose_callback,this);
