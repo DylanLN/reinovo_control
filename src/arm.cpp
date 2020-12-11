@@ -49,12 +49,12 @@ void ReinovoControl::fpump()
     std_srvs::SetBool srv;
     srv.request.data = ui->pump->isChecked();
     if(pump_client.call(srv)){
-        ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"切换完毕");
+        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"切换完毕");
     }else{
-        ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"失败,未连接到机械臂");
+        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"失败,未连接到机械臂");
     }
 }
-
+//显示机械臂
 void ReinovoControl::position_callback(const arm_controller::control& msg)
 {
     ui->value_x->setText(QString("%1").arg(msg.position.x));
@@ -63,7 +63,7 @@ void ReinovoControl::position_callback(const arm_controller::control& msg)
 }
 
 
-//速度使能
+//微调
 void ReinovoControl::fmicro()
 {
     //CheckBox状态获取
