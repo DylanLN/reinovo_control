@@ -50,6 +50,9 @@ roslaunch reinovo_control reinovo_control.launch
 
 ### 1.首页
 
+![Image text](https://github.com/DylanLN/reinovo_control/blob/alpha/doc/image/home.png)
+
+
 打开/关闭驱动:	打开/关闭底盘,运动学解算,定向移动 + 激光雷达节点
 
 开始/关闭建图:	打开gmapping地图构建
@@ -67,6 +70,8 @@ open all:	打开/关闭 手臂抓取+自主充电模块
 
 ### 2.Teleop
 
+![Image text](https://github.com/DylanLN/reinovo_control/blob/alpha/doc/image/teleop.png)
+
 vx/vy/vth:	控制时的速度
 
 使能:	只有勾选使能才可以控制
@@ -81,6 +86,7 @@ stop:	点击控制按键时机器人会一直按这个方向移动,点击stop可
 
 
 ### 3.导航
+![Image text](https://github.com/DylanLN/reinovo_control/blob/alpha/doc/image/nav.png)
 
 地图列表:   reinovo_control功能包maps文件夹下的所有地图,首次使用或地图有增加需要刷新使用
 
@@ -102,6 +108,7 @@ goto:   导航到导航点列表下拉框所框选的地标点
 
 
 ### 4.示教
+![Image text](https://github.com/DylanLN/reinovo_control/blob/alpha/doc/image/shijiao.png)
 
 示教列表:   点击刷新可以显示示教任务列表,双击示教列表下的任务可以显示示教信息
 
@@ -119,6 +126,7 @@ goto:   导航到导航点列表下拉框所框选的地标点
 
 
 ### 5.组合
+![Image text](https://github.com/DylanLN/reinovo_control/blob/alpha/doc/image/zuhe.png)
 
 path list:   路径列表,需要点击刷新
 
@@ -138,6 +146,7 @@ path list:   路径列表,需要点击刷新
 
 
 ### 6.调度
+![Image text](https://github.com/DylanLN/reinovo_control/blob/alpha/doc/image/diaodu.png)
 
 开启调度:   开启调度节点
 
@@ -157,12 +166,14 @@ path list:   开启调度前需要刷新路径列表
 
 
 ### 7.机器人状态
+![Image text](https://github.com/DylanLN/reinovo_control/blob/alpha/doc/image/zhuangtai.png)
 
 开发中...
 
 显示机器人信息:连接情况/速度/电压/cpu使用率/cpu温度...等等
 
 ### 8.使用教程
+![Image text](https://github.com/DylanLN/reinovo_control/blob/alpha/doc/image/jiaocheng.png)
 
  导向官方网站,放二维码开发中
 
