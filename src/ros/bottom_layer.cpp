@@ -60,7 +60,9 @@ public:
     ros::ServiceClient shutdown_bringup;
     ros::ServiceClient shutdown_all;
     ros::ServiceClient shutdown_other1,shutdown_other2,shutdown_other3;
+
     ros::ServiceClient shutdown_nav;
+    ros::ServiceClient shutdown_arm;
     ros::ServiceClient shutdown_dispatch;
 
 	ros::ServiceServer getpose_server;
@@ -82,11 +84,19 @@ public:
 
 
 
+    //底层控制节点
     uint8_t flag_bringup;
+    //slam地图构建
     uint8_t flag_slam;
+    //开启所有外设
     uint8_t flag_all;
+    //其他三功能
     uint8_t flag_other[3];
+    //导航
     uint8_t flag_nav;
+    //arm控制开启标志位
+    uint8_t flag_arm;
+    //调度节点
     uint8_t flag_dispatch;
 
 
@@ -333,6 +343,39 @@ bool BootomLayer::key_callback(reinovo_control::ask::Request &req,
                 res.success = true;
             }
         }
+    }else if (req.message == "arm"){
+        if (flag_arm == 0 && req.mode == 1){
+            if(system("roslaunch reinovo_control robot_arm.launch&")<0){
+                flag_arm = 10;
+                res.success = false;
+                res.message = "system(arm) errorr 开启失败";
+                //ROS_ERROR("system() errorr");
+            }else{
+                flag_arm = 1;
+                res.message = "arm 正在开启";
+                res.success = true;
+            }
+        }else if(flag_arm == 1 && req.mode == 0){
+            reinovo_control::ask srv;
+            srv.request.mode = true;
+            if (shutdown_arm.call(srv))
+            {
+                if (srv.response.success == true)
+                {
+                    flag_arm = 0;
+                    res.message = "arm 正在关闭";
+                    res.success = true;
+                }else{
+                    flag_arm = 10;
+                    res.message = "arm 关闭失败";
+                    res.success = false;
+                }
+            }else{
+                flag_arm = 0;
+                res.message = "arm 未连接，可能已关闭";
+                res.success = true;
+            }
+        }
     }else{
         res.message = "未找到该功能";
         res.success = false;
@@ -429,6 +472,7 @@ BootomLayer::BootomLayer()
     shutdown_other2 = nh.serviceClient<reinovo_control::ask>("/robot_other2/shutdown");
     shutdown_other3 = nh.serviceClient<reinovo_control::ask>("/robot_other3/shutdown");
     shutdown_nav = nh.serviceClient<reinovo_control::ask>("/robot_nav/shutdown");
+    shutdown_arm = nh.serviceClient<reinovo_control::ask>("/robot_arm/shutdown");
     shutdown_dispatch = nh.serviceClient<reinovo_control::ask>("/robot_dispatch/shutdown");
     getpose_server  =   nh.advertiseService("get_pose",&BootomLayer::getpose_callback,this);
     gotopose_server = nh.advertiseService("goto_pose",&BootomLayer::gotopose_callback,this);

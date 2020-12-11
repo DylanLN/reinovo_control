@@ -271,3 +271,5 @@ ui按钮增大,适应触摸屏机器人
     sudo vi /usr/share/applications/reinovo_control.desktop
     
     将第八行:Terminal=true参数修改为false
+## 请联系我
+    如果您有更好的想法或志愿加入该工程可联系825255961@qq.com  - LN

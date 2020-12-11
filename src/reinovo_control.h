@@ -49,6 +49,8 @@
 #include "reinovo_control/tasksrv.h"
 #include "reinovo_control/taskserver.h"
 
+#include "arm_controller/control.h"
+
 #include "oryxbot_msgs/centerAction.h"
 #include <actionlib/client/simple_action_client.h>
 #include <actionlib/client/terminal_state.h>
@@ -79,7 +81,7 @@ public:
     ros::ServiceClient map_client;
 
     ros::Publisher pub;
-    ros::Publisher vel_pub;
+
     
 
 //其他函数
@@ -106,7 +108,7 @@ public slots:
     void fpub_vthplus();    //发布+vth指令
     void fpub_vthminus();    //发布-vth指令
     void fvel_stop();    //发布stop指令
-    
+
     //导航
     void frefresh_map();       //地图列表
     void fswitch_map();     //切换地图
@@ -117,6 +119,22 @@ public slots:
     void fdelete_target();  //删除导航点
     void fget_gesture();    //获取姿态
     void fsave_target();    //保存目标点
+
+    //arm
+    void fopen_arm();   //开启关闭手臂
+    void fpump();   //气泵
+
+    void fplusx();       
+    void fplusy();
+    void fplusz();
+    void fredx();
+    void fredy();
+    void fredz();
+    void fmicro();
+
+    void position_callback(const arm_controller::control& msg);
+
+
     //示教
     void frefresh_teach();  //刷新示教
     void fteach_list(QListWidgetItem* aItem);     //示教列表
@@ -163,21 +181,23 @@ public:
 
     //Teleop
     uint8_t flag_speed;
-    //导航
-    uint8_t flag_nav;
+
+
     //调度
     uint8_t flag_dispatch;
     uint8_t flag_charging;
     float fvoltage_threshold,fcharging_time;
 
-//ros中需要的数据
 public:
+    //Telop
     geometry_msgs::Twist vel;
-
+    ros::Publisher vel_pub;
     //导航
+
+    uint8_t flag_nav;
+
     ros::ServiceClient get_navgoal;
     ros::ServiceClient save_navgoal;
-
     ros::ServiceClient get_path;
     ros::ServiceClient pub_path;
     ros::ServiceClient key_client;
@@ -186,10 +206,14 @@ public:
     ros::ServiceClient switch_map;
     ros::ServiceClient delete_map;
     ros::ServiceClient goto_pose;
-
     ros::ServiceClient open_dispatch;
 
-
+    //arm
+    ros::Publisher armvel_pub;
+	ros::Subscriber arm_sub;
+    ros::ServiceClient pump_client;
+    uint8_t flag_arm;
+    float arm_cmd;
     //示教
     ros::ServiceClient get_actiontem;
     ros::ServiceClient get_task;

@@ -1,0 +1,10 @@
+<launch>
+    <group ns="robot_arm">
+	    <node pkg="reinovo_control" type="blank" name="blank" output="screen" required="true"/>
+	</group>
+	<!--以上勿动-->
+
+    <node pkg="arm_controller" type="arm_controller" name="arm_controller" output="screen"/>
+
+</launch>
+

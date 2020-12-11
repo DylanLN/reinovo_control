@@ -216,6 +216,13 @@ set(reinovo_SRCS
     ${ui_header}
     src/reinovo_control.h
     src/reinovo_control.cpp
+    src/arm.cpp
+    src/teleop.cpp
+    src/nav.cpp
+    src/home.cpp
+    src/teach.cpp
+    src/combin.cpp
+    src/dispatch.cpp
 )
  add_library(reinovo_control
     ${reinovo_SRCS}
@@ -227,7 +234,7 @@ set(reinovo_SRCS
  )
 
 add_executable(blank
-  src/blank.cpp
+  src/ros/blank.cpp
 )
 add_dependencies(blank ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(blank
@@ -235,7 +242,7 @@ target_link_libraries(blank
 )
 
 add_executable(bottom_layer
-  src/bottom_layer.cpp
+  src/ros/bottom_layer.cpp
 )
 add_dependencies(bottom_layer ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(bottom_layer
@@ -243,7 +250,7 @@ target_link_libraries(bottom_layer
 )
 
 add_executable(center
-  src/center.cpp
+  src/ros/center.cpp
 )
 add_dependencies(center ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(center
