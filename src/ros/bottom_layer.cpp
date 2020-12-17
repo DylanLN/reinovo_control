@@ -56,13 +56,21 @@ public:
 
     //首页
 	ros::ServiceServer key_server;
+    //建图
     ros::ServiceClient shutdown_slam;
+    //驱动
     ros::ServiceClient shutdown_bringup;
+    //全部
     ros::ServiceClient shutdown_all;
+    //自定义功能123
     ros::ServiceClient shutdown_other1,shutdown_other2,shutdown_other3;
 
     ros::ServiceClient shutdown_nav;
+    //手臂
     ros::ServiceClient shutdown_arm;
+    //相机
+    ros::ServiceClient shutdown_cam;
+    //调度
     ros::ServiceClient shutdown_dispatch;
 
 	ros::ServiceServer getpose_server;
@@ -96,6 +104,8 @@ public:
     uint8_t flag_nav;
     //arm控制开启标志位
     uint8_t flag_arm;
+    //arm相机开启标志位
+    uint8_t flag_cam;
     //调度节点
     uint8_t flag_dispatch;
 
@@ -275,7 +285,9 @@ bool BootomLayer::key_callback(reinovo_control::ask::Request &req,
                 res.success = true;
             }
         }
-    }else if (req.message == "other3"){
+    }
+    //其他
+    else if (req.message == "other3"){
         if (flag_other[2] == 0 && req.mode == 1){
             if(system("roslaunch reinovo_control robot_other3.launch&")<0){
                 flag_other[2] = 10;
@@ -308,7 +320,9 @@ bool BootomLayer::key_callback(reinovo_control::ask::Request &req,
                 res.success = true;
             }
         }
-    }else if (req.message.find("nav") >= 0&&req.message.find("nav") < 100){
+    }
+    //导航
+    else if (req.message.find("nav") >= 0&&req.message.find("nav") < 100){
         if (flag_nav == 0 && req.mode == 1){
             string str2 = req.message.substr(req.message.find(":")+1);
             string str1 = "roslaunch reinovo_control robot_nav.launch map_name:=" + str2 + "&";
@@ -343,7 +357,9 @@ bool BootomLayer::key_callback(reinovo_control::ask::Request &req,
                 res.success = true;
             }
         }
-    }else if (req.message == "arm"){
+    }
+    //手臂
+    else if (req.message == "arm"){
         if (flag_arm == 0 && req.mode == 1){
             if(system("roslaunch reinovo_control robot_arm.launch&")<0){
                 flag_arm = 10;
@@ -373,6 +389,41 @@ bool BootomLayer::key_callback(reinovo_control::ask::Request &req,
             }else{
                 flag_arm = 0;
                 res.message = "arm 未连接，可能已关闭";
+                res.success = true;
+            }
+        }
+    }
+    //相机
+    else if (req.message == "cam"){
+        if (flag_cam == 0 && req.mode == 1){
+            if(system("roslaunch reinovo_control robot_cam.launch&")<0){
+                flag_cam = 10;
+                res.success = false;
+                res.message = "system(cam) errorr 开启失败";
+                //ROS_ERROR("system() errorr");
+            }else{
+                flag_cam = 1;
+                res.message = "cam 正在开启";
+                res.success = true;
+            }
+        }else if(flag_cam == 1 && req.mode == 0){
+            reinovo_control::ask srv;
+            srv.request.mode = true;
+            if (shutdown_cam.call(srv))
+            {
+                if (srv.response.success == true)
+                {
+                    flag_cam = 0;
+                    res.message = "cam 正在关闭";
+                    res.success = true;
+                }else{
+                    flag_cam = 10;
+                    res.message = "cam 关闭失败";
+                    res.success = false;
+                }
+            }else{
+                flag_cam = 0;
+                res.message = "cam 未连接，可能已关闭";
                 res.success = true;
             }
         }
@@ -473,6 +524,7 @@ BootomLayer::BootomLayer()
     shutdown_other3 = nh.serviceClient<reinovo_control::ask>("/robot_other3/shutdown");
     shutdown_nav = nh.serviceClient<reinovo_control::ask>("/robot_nav/shutdown");
     shutdown_arm = nh.serviceClient<reinovo_control::ask>("/robot_arm/shutdown");
+    shutdown_cam = nh.serviceClient<reinovo_control::ask>("/robot_cam/shutdown");
     shutdown_dispatch = nh.serviceClient<reinovo_control::ask>("/robot_dispatch/shutdown");
     getpose_server  =   nh.advertiseService("get_pose",&BootomLayer::getpose_callback,this);
     gotopose_server = nh.advertiseService("goto_pose",&BootomLayer::gotopose_callback,this);

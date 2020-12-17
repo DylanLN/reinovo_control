@@ -1,5 +1,5 @@
 path:
 - name: oryx
-  nav_name: [cnc0, cnc1, charg]
-  number: 3
-  task_name: [cnc2, cnc2, charg]
+  nav_name: [cnc1, cnc2, cdz, cnc1, cnc2, cdz]
+  number: 6
+  task_name: [cnc11, cnc21, charg, cnc12, cnc22, chargover]

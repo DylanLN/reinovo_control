@@ -30,10 +30,51 @@ void ReinovoControl::fopen_arm()
         {
             if (srv.response.success == true)
             {
-                ui->open_arm->setText(QString::fromStdString(strother[0]));
+                ui->open_arm->setText("开启手臂");
                 flag_arm=0;
             }else{
                 ui->open_arm->setText("错误");                
+            }
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+QString::fromStdString(srv.response.message));
+        }else{
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"未连接到底层节点");
+        }
+    }
+}
+
+//open_cam
+void ReinovoControl::fopen_cam()
+{
+    if(flag_cam == 0){
+
+        reinovo_control::ask srv;
+        srv.request.mode = 1;
+        srv.request.message = "cam";
+        if (key_client.call(srv))
+        {
+            if (srv.response.success == true)
+            {
+                ui->open_cam->setText("关闭相机");
+                flag_cam=1;
+            }else{
+                ui->open_cam->setText("错误");                
+            }
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+QString::fromStdString(srv.response.message));
+        }else{
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"未连接到底层节点");
+        }
+    }else if(flag_cam == 1){
+        reinovo_control::ask srv;
+        srv.request.mode = 0;
+        srv.request.message = "cam";
+        if (key_client.call(srv))
+        {
+            if (srv.response.success == true)
+            {
+                ui->open_cam->setText("开启相机");
+                flag_cam=0;
+            }else{
+                ui->open_cam->setText("错误");                
             }
             ui->total_output->appendPlainText(QString::fromStdString(get_time())+QString::fromStdString(srv.response.message));
         }else{
@@ -54,13 +95,28 @@ void ReinovoControl::fpump()
         ui->total_output->appendPlainText(QString::fromStdString(get_time())+"失败,未连接到机械臂");
     }
 }
+
+//电机解锁
+void ReinovoControl::funlock_arm()
+{
+    std_srvs::SetBool srv;
+    srv.request.data = ui->unlock_arm->isChecked();
+    if(unlock_client.call(srv)){
+        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"电机锁");
+    }else{
+        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"失败,未连接到机械臂");
+    }
+}
+
 //显示机械臂
 void ReinovoControl::position_callback(const arm_controller::control& msg)
 {
     ui->value_x->setText(QString("%1").arg(msg.position.x));
     ui->value_y->setText(QString("%1").arg(msg.position.y));
     ui->value_z->setText(QString("%1").arg(msg.position.z));
+    arm_pos = msg;
 }
+
 
 
 //微调

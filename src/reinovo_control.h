@@ -92,6 +92,7 @@ public:
 //按键槽函数
 public slots:
     //首页
+    void freinovo_control();
     void fopen_driver();    //打开驱动
     void fopen_slam();  //打开建图
     void fsave_map();   //保存地图
@@ -123,7 +124,8 @@ public slots:
     //arm
     void fopen_arm();   //开启关闭手臂
     void fpump();   //气泵
-
+    void funlock_arm();     //电机锁
+    void fopen_cam();
     void fplusx();       
     void fplusy();
     void fplusz();
@@ -212,7 +214,10 @@ public:
     ros::Publisher armvel_pub;
 	ros::Subscriber arm_sub;
     ros::ServiceClient pump_client;
+    ros::ServiceClient unlock_client;
+    arm_controller::control arm_pos;
     uint8_t flag_arm;
+    uint8_t flag_cam;
     float arm_cmd;
     //示教
     ros::ServiceClient get_actiontem;

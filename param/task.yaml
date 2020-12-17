@@ -1,35 +1,154 @@
 task:
 - action:
+  - name: goto_charge
+    number: 1
+    param: !!python/tuple [3.0]
+    param_name: [charge]
+  - name: sleep
+    number: 1
+    param: !!python/tuple [20.0]
+    param_name: [time]
+  - name: relative_move
+    number: 2
+    param: !!python/tuple [0.0, -0.4000000059604645]
+    param_name: [mode, relative_move]
+  name: charg
+  step: 3
+- action:
+  - name: goto_charge
+    number: 1
+    param: !!python/tuple [3.0]
+    param_name: [charge]
+  name: chargover
+  step: 1
+- action:
   - name: Track
     number: 1
     param: !!python/tuple [0.0]
     param_name: [track]
   - name: relative_move
     number: 2
-    param: !!python/tuple [0.0, 0.10000000149011612]
+    param: !!python/tuple [0.0, 0.15000000596046448]
     param_name: [mode, relative_move]
   - name: pick_ar
     number: 5
-    param: !!python/tuple [3.0, 0.0, 50.0, -260.0, 50.0]
+    param: !!python/tuple [4.0, 0.0, 20.0, -240.0, 60.0]
     param_name: [number, mode, position0, position1, position2]
   - name: goto_position
     number: 3
-    param: !!python/tuple [30.0, -160.0, 150.0]
+    param: !!python/tuple [20.0, 160.0, 150.0]
+    param_name: [x, y, z]
+  - name: relative_move
+    number: 2
+    param: !!python/tuple [0.0, -0.4000000059604645]
+    param_name: [mode, relative_move]
+  name: cnc11
+  step: 5
+- action:
+  - name: Track
+    number: 1
+    param: !!python/tuple [0.0]
+    param_name: [track]
+  - name: relative_move
+    number: 2
+    param: !!python/tuple [0.0, 0.15000000596046448]
+    param_name: [mode, relative_move]
+  - name: pick_ar
+    number: 5
+    param: !!python/tuple [3.0, 0.0, 20.0, -240.0, 60.0]
+    param_name: [number, mode, position0, position1, position2]
+  - name: goto_position
+    number: 3
+    param: !!python/tuple [20.0, 160.0, 150.0]
+    param_name: [x, y, z]
+  - name: relative_move
+    number: 2
+    param: !!python/tuple [0.0, -0.4000000059604645]
+    param_name: [mode, relative_move]
+  name: cnc21
+  step: 5
+- action:
+  - name: Track
+    number: 1
+    param: !!python/tuple [0.0]
+    param_name: [track]
+  - name: relative_move
+    number: 2
+    param: !!python/tuple [0.0, 0.15000000596046448]
+    param_name: [mode, relative_move]
+  - name: goto_position
+    number: 3
+    param: !!python/tuple [40.0, -170.0, 150.0]
     param_name: [x, y, z]
   - name: pick_ar
     number: 5
-    param: !!python/tuple [3.0, 1.0, 35.0, 218.0, 45.0]
+    param: !!python/tuple [4.0, 1.0, 6.0, 210.0, 40.0]
     param_name: [number, mode, position0, position1, position2]
   - name: relative_move
     number: 2
-    param: !!python/tuple [0.0, -0.30000001192092896]
+    param: !!python/tuple [0.0, -0.4000000059604645]
     param_name: [mode, relative_move]
-  name: cnc2
-  step: 6
+  name: cnc12
+  step: 5
 - action:
-  - name: goto_charge
+  - name: Track
     number: 1
-    param: !!python/tuple [3.0]
-    param_name: [charge]
-  name: charg
-  step: 1
+    param: !!python/tuple [0.0]
+    param_name: [track]
+  - name: relative_move
+    number: 2
+    param: !!python/tuple [0.0, 0.15000000596046448]
+    param_name: [mode, relative_move]
+  - name: goto_position
+    number: 3
+    param: !!python/tuple [40.0, -170.0, 150.0]
+    param_name: [x, y, z]
+  - name: pick_ar
+    number: 5
+    param: !!python/tuple [3.0, 1.0, 52.0, 164.0, 36.0]
+    param_name: [number, mode, position0, position1, position2]
+  - name: relative_move
+    number: 2
+    param: !!python/tuple [0.0, -0.4000000059604645]
+    param_name: [mode, relative_move]
+  name: cnc22
+  step: 5
+- action:
+  - name: set_zero
+    number: 4
+    param: !!python/tuple [0.0, 0.0, 0.0, 0.0]
+    param_name: [x, y, z, r]
+  - name: Track
+    number: 1
+    param: !!python/tuple [0.0]
+    param_name: [track]
+  - name: sleep
+    number: 1
+    param: !!python/tuple [0.0]
+    param_name: [time]
+  - name: relative_move
+    number: 2
+    param: !!python/tuple [0.0, 0.0]
+    param_name: [mode, relative_move]
+  - name: relative_move
+    number: 2
+    param: !!python/tuple [0.0, 0.0]
+    param_name: [mode, relative_move]
+  - name: sleep
+    number: 1
+    param: !!python/tuple [0.0]
+    param_name: [time]
+  - name: Track
+    number: 1
+    param: !!python/tuple [0.0]
+    param_name: [track]
+  - name: Track
+    number: 1
+    param: !!python/tuple [0.0]
+    param_name: [track]
+  - name: Track
+    number: 1
+    param: !!python/tuple [0.0]
+    param_name: [track]
+  name: test1
+  step: 9

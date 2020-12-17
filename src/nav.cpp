@@ -107,7 +107,7 @@ void ReinovoControl::frefresh_target()
         ui->target_list->clear(); //清除列表
         for (size_t i = 0; i < v_navgoal.size(); i++)
         {
-            ui->total_output->appendPlainText(QString::fromStdString(v_navgoal[i].name));
+            cout << v_navgoal[i].name << endl;
             ui->target_list->addItem(QString::fromStdString(v_navgoal[i].name)); //不带图标
         }
         ui->total_output->appendPlainText(QString::fromStdString(get_time())+"已刷新导航点");   

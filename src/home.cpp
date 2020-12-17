@@ -1,6 +1,13 @@
 #include "reinovo_control.h"
 
 /*******************    首页    **********************/
+
+void ReinovoControl::freinovo_control()
+{
+    ui->total_output->appendPlainText(QString::fromStdString(get_time())+ "reinovo control 是一款开源的机器人控制软件,用户可根据自己需求修改.可通过登录深圳市元创兴科技有限公司官网www.reinovo.com或其他方式联系我们." ); 
+}
+
+
 //打开关闭驱动
 void ReinovoControl::fopen_driver()
 {

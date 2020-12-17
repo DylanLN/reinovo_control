@@ -13,6 +13,42 @@ string ReinovoControl::get_time()
     return now;
 }
 
+//ui 的回调函数
+void ReinovoControl::ui_thread()
+{
+    ros::Rate loop(5);
+    while(ros::ok()){
+        if (ui_state == 1)
+        {
+            reinovo_control::goto_navgoal srv;
+            srv.request.nav_goal.name = ui->target_list->currentText().toStdString();
+            for (size_t i = 0; i < v_navgoal.size(); i++)
+            {
+                if(srv.request.nav_goal.name == v_navgoal[i].name){
+                    srv.request.nav_goal.pose.x = v_navgoal[i].pose.x;
+                    srv.request.nav_goal.pose.y = v_navgoal[i].pose.y;
+                    srv.request.nav_goal.pose.theta = v_navgoal[i].pose.theta;
+                    if(goto_pose.call(srv)){
+                        if(srv.response.success == true){
+                            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"已到达");   
+                        }else{
+                            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"导航失败");   
+                        }
+                    }else{
+                        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"错误：未连接到底层节点！");   
+                    }
+                    break;
+                }
+            }
+            ui_state=0;
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"goto 已到达");   
+        }
+        loop.sleep();
+    }
+}
+
+
+
 /*******************    ros    **********************/
 /*******************    ros    **********************/
 
@@ -28,6 +64,8 @@ ReinovoControl::ReinovoControl(QWidget* parent):rviz::Panel(parent),ui(new Ui::F
 
 //槽函数初始化
     //首页
+    
+    connect(ui->reinovo_control, SIGNAL(clicked()), this, SLOT(freinovo_control()));    //打开、关闭驱动
     connect(ui->open_driver, SIGNAL(clicked()), this, SLOT(fopen_driver()));    //打开、关闭驱动
     connect(ui->open_slam, SIGNAL(clicked()), this, SLOT(fopen_slam()));    //开始、关闭建图
     connect(ui->save_map, SIGNAL(clicked()), this, SLOT(fsave_map()));      //保存地图
@@ -75,9 +113,12 @@ ReinovoControl::ReinovoControl(QWidget* parent):rviz::Panel(parent),ui(new Ui::F
     //开启手臂
     connect(ui->open_arm, SIGNAL(clicked()), this, SLOT(fopen_arm()));
     connect(ui->pump, SIGNAL(clicked()), this, SLOT(fpump()));
+    connect(ui->unlock_arm, SIGNAL(clicked()), this, SLOT(funlock_arm()));
+    connect(ui->open_cam, SIGNAL(clicked()), this, SLOT(fopen_cam()));
     
     arm_cmd = 3;
     flag_arm = 0;
+    flag_cam = 0;
     connect(ui->micro, SIGNAL(clicked()), this, SLOT(fmicro()));   //微调
     connect(ui->plusx, SIGNAL(clicked()), this, SLOT(fplusx()));         //发布正vx
     connect(ui->plusy, SIGNAL(clicked()), this, SLOT(fplusy()));         //发布正vx
@@ -193,10 +234,13 @@ ReinovoControl::ReinovoControl(QWidget* parent):rviz::Panel(parent),ui(new Ui::F
     arm_sub = nh_.subscribe("arm_controller/position_info",100,&ReinovoControl::position_callback,this);
     //气泵控制客户端
     pump_client = nh_.serviceClient<std_srvs::SetBool>("pump");
+    unlock_client = nh_.serviceClient<std_srvs::SetBool>("unlock");
     //暂停调度
     suspend_client =  nh_.serviceClient<std_srvs::SetBool>("center_suspend");
 
     uithread = boost::thread(boost::bind(&ReinovoControl::ui_thread, this));
+
+    //开启多线程接收
     ros::AsyncSpinner spinner(3); 
     spinner.start();
 }

@@ -1,0 +1,68 @@
+task: 
+  - 
+    name: "charg"
+    step: 1
+    action: 
+      - 
+        name: "goto_charge"
+        number: 1
+        param_name: [charge]
+        param: [3.0]
+  - 
+    name: "cnc11"
+    step: 5
+    action: 
+      - 
+        name: "Track"
+        number: 1
+        param_name: [track]
+        param: [0.0]
+      - 
+        name: "relative_move"
+        number: 2
+        param_name: [mode, relative_move]
+        param: [0.0, 0.15000000596046448]
+      - 
+        name: "pick_ar"
+        number: 5
+        param_name: [number, mode, position0, position1, position2]
+        param: [4.0, 0.0, 20.0, -240.0, 60.0]
+      - 
+        name: "goto_position"
+        number: 3
+        param_name: [x, y, z]
+        param: [20.0, 160.0, 150.0]
+      - 
+        name: "relative_move"
+        number: 2
+        param_name: [mode, relative_move]
+        param: [0.0, -0.4000000059604645]
+  - 
+    name: "cnc21"
+    step: 6
+    action: 
+      - 
+        name: "Track"
+        number: 1
+        param_name: [track]
+        param: [0.0]
+      - 
+        name: "relative_move"
+        number: 2
+        param_name: [mode, relative_move]
+        param: [0.0, 0.15000000596046448]
+      - 
+        name: "pick_ar"
+        number: 5
+        param_name: [number, mode, position0, position1, position2]
+        param: [3.0, 0.0, 20.0, -240.0, 60.0]
+      - 
+        name: "goto_position"
+        number: 3
+        param_name: [x, y, z]
+        param: [20.0, 160.0, 150.0]
+      - 
+        name: "relative_move"
+        number: 2
+        param_name: [mode, relative_move]
+        param: [0.0, -0.4000000059604645]

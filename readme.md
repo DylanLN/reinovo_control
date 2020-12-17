@@ -22,7 +22,9 @@ sudo apt-get install ros-kinetic-qt-create  ros-kinetic-qt-build
 安装qt5(可选)
 ## 安装
 ```bash
-cd catkin_ws
+cd catkin_ws/src
+git clone https://github.com/DylanLN/reinovo_control.git
+cd ..
 catkin_make
 roscd reinovo_control/icon/
 sudo sh install.sh
@@ -283,4 +285,4 @@ ui按钮增大,适应触摸屏机器人
     
     将第八行:Terminal=true参数修改为false
 ## 请联系我
-    如果您有更好的想法或志愿加入该工程可联系825255961@qq.com  - LN
+    如果您在使用过程中遇到重大bug or 有更好的想法 or 志愿加入该工程可联系825255961@qq.com  - LN

@@ -130,7 +130,7 @@ void ReinovoControl::fadd_action()     //添加action
     int teach_info = ui->teach_info->currentRow();
 
     v_task[teach_list].action.insert(v_task[teach_list].action.begin()+teach_info+1,v_actiontem[ui->action_list->currentIndex()]);
-    v_task[teach_list].step++;
+    v_task[teach_list].step = v_task[teach_list].action.size();
 
     //ROS_INFO_STREAM("V TASK:"<<v_task[teach_list].action[teach_info].name <<v_task[teach_list].step);
     ui->total_output->appendPlainText(QString::fromStdString(get_time())+"添加action");
@@ -145,6 +145,7 @@ void ReinovoControl::fdelete_action()  //删除action
     }else{
         int row=ui->teach_info->currentRow();
         v_task[teach_list].action.erase(v_task[teach_list].action.begin()+row);
+        v_task[teach_list].step = v_task[teach_list].action.size();
 
         QListWidgetItem* aItem=ui->teach_info->takeItem(row);
         delete aItem;

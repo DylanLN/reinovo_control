@@ -47,6 +47,8 @@ void ReinovoControl::fopen_dispatch()
 void ReinovoControl::doneCb(const actionlib::SimpleClientGoalState& state, const oryxbot_msgs::centerResultConstPtr& result)
 {
     ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"调度已完成");
+    ui->start_dispatch->setText("开始调度");
+    dispatch_status = 0;
     //  QScrollBar *scrollbar = ui->dispatch_output->verticalScrollBar();
     //  if (scrollbar)
     //  {
@@ -67,8 +69,9 @@ void ReinovoControl::activeCb()
  */
 void ReinovoControl::feedbackCb(const oryxbot_msgs::centerFeedbackConstPtr& feedback)
 {
+
     ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+QString::fromStdString(feedback->message.c_str()));
-    ui->dispatch_output->moveCursor(QTextCursor::End);
+    // ui->dispatch_output->moveCursor(QTextCursor::End);
 }
 
 void ReinovoControl::actionclient()
@@ -79,7 +82,6 @@ void ReinovoControl::actionclient()
     client.sendGoal(goal,boost::bind(&ReinovoControl::doneCb, this, _1, _2),
                 boost::bind(&ReinovoControl::activeCb, this),
                 boost::bind(&ReinovoControl::feedbackCb, this, _1));
-    ros::spin();
 }
 
 
@@ -89,13 +91,13 @@ void ReinovoControl::actionclient()
 void ReinovoControl::fstart_dispatch()
 {
     if(flag_dispatch  == 1 && dispatch_status == 0){
-        actionthread = boost::thread(boost::bind(&ReinovoControl::actionclient, this));
+        actionclient();
         ui->start_dispatch->setText("停止调度");
         dispatch_status = 1;
         ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"开始调度");
     }else if(flag_dispatch  == 1 && dispatch_status == 1){
         client.cancelAllGoals();
-        actionthread.interrupt();
+        // actionthread.interrupt();
         ui->start_dispatch->setText("开始调度");
         dispatch_status = 0;
         ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"停止调度");
@@ -172,38 +174,5 @@ void ReinovoControl::fauto_charging()
         }
     }else{
         ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"停止自动充电");
-    }
-}    
-
-void ReinovoControl::ui_thread()
-{
-    ros::Rate loop(10);
-    while(ros::ok()){
-        if (ui_state == 1)
-        {
-            reinovo_control::goto_navgoal srv;
-            srv.request.nav_goal.name = ui->target_list->currentText().toStdString();
-            for (size_t i = 0; i < v_navgoal.size(); i++)
-            {
-                if(srv.request.nav_goal.name == v_navgoal[i].name){
-                    srv.request.nav_goal.pose.x = v_navgoal[i].pose.x;
-                    srv.request.nav_goal.pose.y = v_navgoal[i].pose.y;
-                    srv.request.nav_goal.pose.theta = v_navgoal[i].pose.theta;
-                    if(goto_pose.call(srv)){
-                        if(srv.response.success == true){
-                            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"已到达");   
-                        }else{
-                            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"导航失败");   
-                        }
-                    }else{
-                        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"错误：未连接到底层节点！");   
-                    }
-                    break;
-                }
-            }
-            ui_state=0;
-            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"goto 已到达");   
-        }
-        loop.sleep();
     }
 }

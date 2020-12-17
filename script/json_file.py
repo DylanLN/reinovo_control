@@ -196,6 +196,7 @@ class JsonFile(object):
             data_task.name = task_dict['name'].encode('gbk')
             data_task.step = task_dict['step']
             for step in range(0,data_task.step):
+                print step
                 data_action = action()
                 action_dict = task_dict['action'][step]
                 data_action.name = action_dict['name'].encode('gbk')
@@ -205,6 +206,7 @@ class JsonFile(object):
                     data_action.param_name.append(action_dict['param_name'][num].encode('gbk'))
                 data_task.action.append(data_action)
             task_list.append(data_task)
+
         return tasksrvResponse(task_list)
 
 #将task保存为文件
