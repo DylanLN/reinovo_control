@@ -15,7 +15,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "blank");
     ros::NodeHandle nh;
     ros::ServiceServer srv_relmove = nh.advertiseService("shutdown", shutdown);
-    ros::Rate loop_rate(20);
+    ros::Rate loop_rate(10);
     while (ros::ok())
     {
         loop_rate.sleep();
@@ -24,7 +24,6 @@ int main(int argc, char** argv)
         {
             ros::shutdown();
         }
-        
     }
     return 0;    
 }

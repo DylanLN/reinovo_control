@@ -16,6 +16,7 @@ using namespace std;
 #include "reinovo_control/get_navgoal.h"
 #include "reinovo_control/goto_navgoal.h"
 
+#include <std_srvs/SetBool.h>
 
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
@@ -23,7 +24,6 @@ using namespace std;
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 MoveBaseClient* navclient;
-
 
 /*首页
 打开、关闭驱动
@@ -80,7 +80,30 @@ public:
     move_base_msgs::MoveBaseGoal goal;  //目标点
 
     tf::TransformListener listener;
-	
+
+    uint8_t flag[10];
+
+    //底层控制节点
+    static const uint8_t flag_bringup = 0;
+    //slam地图构建
+    static const uint8_t flag_slam = 1 ;
+    //开启所有外设
+    static const uint8_t flag_all = 2;
+    //其他三功能
+    static const uint8_t flag_other0 = 3;
+    static const uint8_t flag_other1 = 4;
+    static const uint8_t flag_other2 = 5;
+    //导航
+    static const uint8_t flag_nav = 6;
+    //arm控制开启标志位
+    static const uint8_t flag_arm = 7;
+    //arm相机开启标志位
+    static const uint8_t flag_cam = 8;
+    //调度节点
+    static const uint8_t flag_dispatch = 9;
+
+
+    //  回调函数
     bool key_callback(reinovo_control::ask::Request &req,
                         reinovo_control::ask::Response &res);
 
@@ -92,22 +115,6 @@ public:
 
 
 
-    //底层控制节点
-    uint8_t flag_bringup;
-    //slam地图构建
-    uint8_t flag_slam;
-    //开启所有外设
-    uint8_t flag_all;
-    //其他三功能
-    uint8_t flag_other[3];
-    //导航
-    uint8_t flag_nav;
-    //arm控制开启标志位
-    uint8_t flag_arm;
-    //arm相机开启标志位
-    uint8_t flag_cam;
-    //调度节点
-    uint8_t flag_dispatch;
 
 
 private:
@@ -121,166 +128,166 @@ bool BootomLayer::key_callback(reinovo_control::ask::Request &req,
     //打开关闭slam
     if (req.message == "slam")
     {
-        if (flag_slam == 0 && req.mode == 1){
+        if (flag[flag_slam] == 0 && req.mode == 1){
             if(system("roslaunch reinovo_control robot_slam.launch&")<0){
-                flag_slam = 10;
+                flag[flag_slam] = 10;
                 res.success = false;
                 res.message = "system(slam) errorr 开启失败";
                 //ROS_ERROR("system() errorr");
             }else{
-                flag_slam = 1;
+                flag[flag_slam] = 1;
                 res.message = "slam 正在开启";
                 res.success = true;
             }
-        }else if(flag_slam == 1 && req.mode == 0){
+        }else if(flag[flag_slam] == 1 && req.mode == 0){
             reinovo_control::ask srv;
             srv.request.mode = true;
             if (shutdown_slam.call(srv))
             {
                 if (srv.response.success == true)
                 {
-                    flag_slam = 0;
+                    flag[flag_slam] = 0;
                     res.message = "slam 正在关闭";
                     res.success = true;
                 }else{
-                    flag_slam = 10;
+                    flag[flag_slam] = 10;
                     res.message = "slam 关闭失败";
                     res.success = false;
                 }
             }else{
-                flag_slam = 0;
+                flag[flag_slam] = 0;
                 res.message = "slam 未连接，可能已关闭";
                 res.success = true;
             }
         }
     }else if (req.message == "bringup"){
-        if (flag_bringup == 0 && req.mode == 1){
+        if (flag[flag_bringup] == 0 && req.mode == 1){
             if(system("roslaunch reinovo_control robot_bringup.launch&")<0){
-                flag_bringup = 10;
+                flag[flag_bringup] = 10;
                 res.success = false;
                 res.message = "system(bringup) errorr 开启失败";
                 //ROS_ERROR("system() errorr");
             }else{
-                flag_bringup = 1;
+                flag[flag_bringup] = 1;
                 res.message = "bringup 正在开启";
                 res.success = true;
             }
-        }else if(flag_bringup == 1 && req.mode == 0){
+        }else if(flag[flag_bringup] == 1 && req.mode == 0){
             reinovo_control::ask srv;
             srv.request.mode = true;
             if (shutdown_bringup.call(srv))
             {
                 if (srv.response.success == true)
                 {
-                    flag_bringup = 0;
+                    flag[flag_bringup] = 0;
                     res.message = "bringup 正在关闭";
                     res.success = true;
                 }else{
-                    flag_bringup = 10;
+                    flag[flag_bringup] = 10;
                     res.message = "bringup 关闭失败";
                     res.success = false;
                 }
             }else{
-                flag_bringup = 0;
+                flag[flag_bringup] = 0;
                 res.message = "bringup 未连接，可能已关闭";
                 res.success = true;
             }
         }
     }else if (req.message == "all"){
-        if (flag_all == 0 && req.mode == 1){
+        if (flag[flag_all] == 0 && req.mode == 1){
             if(system("roslaunch reinovo_control robot_all.launch&")<0){
-                flag_all = 10;
+                flag[flag_all] = 10;
                 res.success = false;
                 res.message = "system(all) errorr 开启失败";
                 //ROS_ERROR("system() errorr");
             }else{
-                flag_all = 1;
+                flag[flag_all] = 1;
                 res.message = "all 正在开启";
                 res.success = true;
             }
-        }else if(flag_all == 1 && req.mode == 0){
+        }else if(flag[flag_all] == 1 && req.mode == 0){
             reinovo_control::ask srv;
             srv.request.mode = true;
             if (shutdown_all.call(srv))
             {
                 if (srv.response.success == true)
                 {
-                    flag_all = 0;
+                    flag[flag_all] = 0;
                     res.message = "all 正在关闭";
                     res.success = true;
                 }else{
-                    flag_all = 10;
+                    flag[flag_all] = 10;
                     res.message = "all 关闭失败";
                     res.success = false;
                 }
             }else{
-                flag_all = 0;
+                flag[flag_all] = 0;
                 res.message = "all 未连接，可能已关闭";
                 res.success = true;
             }
         }
     }else if (req.message == "other1"){
-        if (flag_other[0] == 0 && req.mode == 1){
+        if (flag[flag_other0] == 0 && req.mode == 1){
             if(system("roslaunch reinovo_control robot_other1.launch&")<0){
-                flag_other[0] = 10;
+                flag[flag_other0] = 10;
                 res.success = false;
                 res.message = "system(其他模块1) errorr 开启失败";
                 //ROS_ERROR("system() errorr");
             }else{
-                flag_other[0] = 1;
+                flag[flag_other0] = 1;
                 res.message = "其他模块1 正在开启";
                 res.success = true;
             }
-        }else if(flag_other[0] == 1 && req.mode == 0){
+        }else if(flag[flag_other0] == 1 && req.mode == 0){
             reinovo_control::ask srv;
             srv.request.mode = true;
             if (shutdown_other1.call(srv))
             {
                 if (srv.response.success == true)
                 {
-                    flag_other[0] = 0;
+                    flag[flag_other0] = 0;
                     res.message = "其他模块1 正在关闭";
                     res.success = true;
                 }else{
-                    flag_other[0] = 10;
+                    flag[flag_other0] = 10;
                     res.message = "其他模块1 关闭失败";
                     res.success = false;
                 }
             }else{
-                flag_other[0] = 0;
+                flag[flag_other0] = 0;
                 res.message = "其他模块1 未连接，可能已关闭";
                 res.success = true;
             }
         }
     }else if (req.message == "other2"){
-        if (flag_other[1] == 0 && req.mode == 1){
+        if (flag[flag_other1] == 0 && req.mode == 1){
             if(system("roslaunch reinovo_control robot_other2.launch&")<0){
-                flag_other[1] = 10;
+                flag[flag_other1] = 10;
                 res.success = false;
                 res.message = "system(其他模块2) errorr 开启失败";
                 //ROS_ERROR("system() errorr");
             }else{
-                flag_other[1] = 1;
+                flag[flag_other1] = 1;
                 res.message = "其他模块2 正在开启";
                 res.success = true;
             }
-        }else if(flag_other[1] == 1 && req.mode == 0){
+        }else if(flag[flag_other1] == 1 && req.mode == 0){
             reinovo_control::ask srv;
             srv.request.mode = true;
             if (shutdown_other2.call(srv))
             {
                 if (srv.response.success == true)
                 {
-                    flag_other[1] = 0;
+                    flag[flag_other1] = 0;
                     res.message = "其他模块2 正在关闭";
                     res.success = true;
                 }else{
-                    flag_other[1] = 10;
+                    flag[flag_other1] = 10;
                     res.message = "其他模块2 关闭失败";
                     res.success = false;
                 }
             }else{
-                flag_other[1] = 0;
+                flag[flag_other1] = 0;
                 res.message = "其他模块2 未连接，可能已关闭";
                 res.success = true;
             }
@@ -288,34 +295,34 @@ bool BootomLayer::key_callback(reinovo_control::ask::Request &req,
     }
     //其他
     else if (req.message == "other3"){
-        if (flag_other[2] == 0 && req.mode == 1){
+        if (flag[flag_other2] == 0 && req.mode == 1){
             if(system("roslaunch reinovo_control robot_other3.launch&")<0){
-                flag_other[2] = 10;
+                flag[flag_other2] = 10;
                 res.success = false;
                 res.message = "system(其他模块3) errorr 开启失败";
                 //ROS_ERROR("system() errorr");
             }else{
-                flag_other[2] = 1;
+                flag[flag_other2] = 1;
                 res.message = "其他模块3 正在开启";
                 res.success = true;
             }
-        }else if(flag_other[2] == 1 && req.mode == 0){
+        }else if(flag[flag_other2] == 1 && req.mode == 0){
             reinovo_control::ask srv;
             srv.request.mode = true;
             if (shutdown_other3.call(srv))
             {
                 if (srv.response.success == true)
                 {
-                    flag_other[2] = 0;
+                    flag[flag_other2] = 0;
                     res.message = "其他模块3 正在关闭";
                     res.success = true;
                 }else{
-                    flag_other[2] = 10;
+                    flag[flag_other2] = 10;
                     res.message = "其他模块3 关闭失败";
                     res.success = false;
                 }
             }else{
-                flag_other[2] = 0;
+                flag[flag_other2] = 0;
                 res.message = "其他模块3 未连接，可能已关闭";
                 res.success = true;
             }
@@ -323,36 +330,36 @@ bool BootomLayer::key_callback(reinovo_control::ask::Request &req,
     }
     //导航
     else if (req.message.find("nav") >= 0&&req.message.find("nav") < 100){
-        if (flag_nav == 0 && req.mode == 1){
+        if (flag[flag_nav] == 0 && req.mode == 1){
             string str2 = req.message.substr(req.message.find(":")+1);
             string str1 = "roslaunch reinovo_control robot_nav.launch map_name:=" + str2 + "&";
             cout << str1 <<endl;
             if(system((const char*)str1.c_str())<0){
-                flag_nav = 10;
+                flag[flag_nav] = 10;
                 res.success = false;
                 res.message = "system(导航) errorr 开启失败";
             }else{
-                flag_nav = 1;
+                flag[flag_nav] = 1;
                 res.message = "导航 正在开启";
                 res.success = true;
             }
-        }else if(flag_nav == 1 && req.mode == 0){
+        }else if(flag[flag_nav] == 1 && req.mode == 0){
             reinovo_control::ask srv;
             srv.request.mode = true;
             if (shutdown_nav.call(srv))
             {
                 if (srv.response.success == true)
                 {
-                    flag_nav = 0;
+                    flag[flag_nav] = 0;
                     res.message = "导航 正在关闭";
                     res.success = true;
                 }else{
-                    flag_nav = 10;
+                    flag[flag_nav] = 10;
                     res.message = "导航 关闭失败";
                     res.success = false;
                 }
             }else{
-                flag_nav = 0;
+                flag[flag_nav] = 0;
                 res.message = "导航 未连接，可能已关闭";
                 res.success = true;
             }
@@ -360,34 +367,34 @@ bool BootomLayer::key_callback(reinovo_control::ask::Request &req,
     }
     //手臂
     else if (req.message == "arm"){
-        if (flag_arm == 0 && req.mode == 1){
+        if (flag[flag_arm] == 0 && req.mode == 1){
             if(system("roslaunch reinovo_control robot_arm.launch&")<0){
-                flag_arm = 10;
+                flag[flag_arm] = 10;
                 res.success = false;
                 res.message = "system(arm) errorr 开启失败";
                 //ROS_ERROR("system() errorr");
             }else{
-                flag_arm = 1;
+                flag[flag_arm] = 1;
                 res.message = "arm 正在开启";
                 res.success = true;
             }
-        }else if(flag_arm == 1 && req.mode == 0){
+        }else if(flag[flag_arm] == 1 && req.mode == 0){
             reinovo_control::ask srv;
             srv.request.mode = true;
             if (shutdown_arm.call(srv))
             {
                 if (srv.response.success == true)
                 {
-                    flag_arm = 0;
+                    flag[flag_arm] = 0;
                     res.message = "arm 正在关闭";
                     res.success = true;
                 }else{
-                    flag_arm = 10;
+                    flag[flag_arm] = 10;
                     res.message = "arm 关闭失败";
                     res.success = false;
                 }
             }else{
-                flag_arm = 0;
+                flag[flag_arm] = 0;
                 res.message = "arm 未连接，可能已关闭";
                 res.success = true;
             }
@@ -395,34 +402,34 @@ bool BootomLayer::key_callback(reinovo_control::ask::Request &req,
     }
     //相机
     else if (req.message == "cam"){
-        if (flag_cam == 0 && req.mode == 1){
+        if (flag[flag_cam] == 0 && req.mode == 1){
             if(system("roslaunch reinovo_control robot_cam.launch&")<0){
-                flag_cam = 10;
+                flag[flag_cam] = 10;
                 res.success = false;
                 res.message = "system(cam) errorr 开启失败";
                 //ROS_ERROR("system() errorr");
             }else{
-                flag_cam = 1;
+                flag[flag_cam] = 1;
                 res.message = "cam 正在开启";
                 res.success = true;
             }
-        }else if(flag_cam == 1 && req.mode == 0){
+        }else if(flag[flag_cam] == 1 && req.mode == 0){
             reinovo_control::ask srv;
             srv.request.mode = true;
             if (shutdown_cam.call(srv))
             {
                 if (srv.response.success == true)
                 {
-                    flag_cam = 0;
+                    flag[flag_cam] = 0;
                     res.message = "cam 正在关闭";
                     res.success = true;
                 }else{
-                    flag_cam = 10;
+                    flag[flag_cam] = 10;
                     res.message = "cam 关闭失败";
                     res.success = false;
                 }
             }else{
-                flag_cam = 0;
+                flag[flag_cam] = 0;
                 res.message = "cam 未连接，可能已关闭";
                 res.success = true;
             }
@@ -507,14 +514,8 @@ bool BootomLayer::gotopose_callback(reinovo_control::goto_navgoal::Request &req,
 
 BootomLayer::BootomLayer()
 {
-    flag_slam=0;
-    flag_bringup=0;
-    flag_nav=0;
-    flag_dispatch=0;
-    flag_all = 0;
-    flag_other[0]=0;
-    flag_other[1]=0;
-    flag_other[2]=0;
+    for(uint8_t i = 0; i < 10; i++)
+        flag[i] = 0;
     key_server=nh.advertiseService("key_server",&BootomLayer::key_callback,this);
     shutdown_slam = nh.serviceClient<reinovo_control::ask>("/robot_slam/shutdown");
     shutdown_bringup = nh.serviceClient<reinovo_control::ask>("/robot_bringup/shutdown");

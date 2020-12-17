@@ -541,7 +541,7 @@ int main(int argc,char** argv)
 
     ROS_INFO(" init ok");
     //开启多线程接收
-    ros::AsyncSpinner spinner(3); 
+    ros::AsyncSpinner spinner(2); 
     spinner.start();
     ros::waitForShutdown();
 }
