@@ -152,11 +152,11 @@ void ReinovoControl::frefresh_path1()
             ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"刷新路径");
         }
     }
-} 
+}
 //加载路径
 void ReinovoControl::fload_path1()
 {
-
+    n.setParam("/center/path_name", ui->path_list1->currentText().toStdString());
     ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"加载路径 ："+ui->path_list1->currentText());
 }
 //自动充电

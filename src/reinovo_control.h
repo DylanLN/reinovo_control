@@ -1,6 +1,7 @@
 #ifndef REINOVO_CONTROL_H
 #define REINOVO_CONTROL_H
 
+/*******************    qt     **********************/
 #include "ui_mainwindow.h"
 #ifndef Q_MOC_RUN
 #include "rviz/panel.h"
@@ -24,6 +25,8 @@
 #include <signal.h>
 #include <unistd.h>
 #include "vector"
+
+// #include "file.h"
 
 /*******************    ros    **********************/
 #include "ros/ros.h"
@@ -75,6 +78,7 @@ public:
     
 
     ros::NodeHandle nh_;
+    //参数等用
     ros::NodeHandle n;
     ros::ServiceClient driver_client;
     ros::ServiceClient slam_client;
@@ -88,6 +92,10 @@ public:
 public:
     string get_time();
 
+//output
+
+    // File ofile;
+    // File* pfile;
 
 //按键槽函数
 public slots:
@@ -252,4 +260,4 @@ public:
 
 
 
-#endif //NAV_H
+#endif

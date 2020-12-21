@@ -894,36 +894,23 @@
        <string>开启相机</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="add_armpose">
+     <widget class="QPushButton" name="arm_goto">
       <property name="geometry">
        <rect>
-        <x>420</x>
-        <y>10</y>
+        <x>180</x>
+        <y>130</y>
         <width>80</width>
         <height>40</height>
        </rect>
       </property>
       <property name="text">
-       <string>添加目标点</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="ar_goto">
-      <property name="geometry">
-       <rect>
-        <x>420</x>
-        <y>90</y>
-        <width>80</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>argoto</string>
+       <string>goto</string>
       </property>
      </widget>
      <widget class="QPushButton" name="enther_teach">
       <property name="geometry">
        <rect>
-        <x>180</x>
+        <x>320</x>
         <y>10</y>
         <width>80</width>
         <height>40</height>
@@ -936,8 +923,8 @@
      <widget class="QSpinBox" name="ar_value">
       <property name="geometry">
        <rect>
-        <x>420</x>
-        <y>70</y>
+        <x>180</x>
+        <y>90</y>
         <width>80</width>
         <height>20</height>
        </rect>
@@ -949,7 +936,7 @@
      <widget class="QPushButton" name="armteach_rea">
       <property name="geometry">
        <rect>
-        <x>180</x>
+        <x>320</x>
         <y>140</y>
         <width>80</width>
         <height>40</height>
@@ -962,7 +949,7 @@
      <widget class="QPushButton" name="save_armteach">
       <property name="geometry">
        <rect>
-        <x>180</x>
+        <x>320</x>
         <y>70</y>
         <width>80</width>
         <height>20</height>
@@ -1062,7 +1049,7 @@
      <widget class="QLineEdit" name="armteach_name">
       <property name="geometry">
        <rect>
-        <x>180</x>
+        <x>320</x>
         <y>50</y>
         <width>80</width>
         <height>20</height>
@@ -1072,7 +1059,7 @@
      <widget class="QComboBox" name="armteach_list_2">
       <property name="geometry">
        <rect>
-        <x>180</x>
+        <x>320</x>
         <y>90</y>
         <width>80</width>
         <height>30</height>
@@ -1082,7 +1069,7 @@
      <widget class="QPushButton" name="remove_armteach">
       <property name="geometry">
        <rect>
-        <x>180</x>
+        <x>320</x>
         <y>120</y>
         <width>80</width>
         <height>20</height>
@@ -1108,8 +1095,8 @@
      <widget class="QCheckBox" name="ar">
       <property name="geometry">
        <rect>
-        <x>420</x>
-        <y>50</y>
+        <x>180</x>
+        <y>110</y>
         <width>80</width>
         <height>20</height>
        </rect>
@@ -1147,11 +1134,57 @@
      <widget class="QListWidget" name="armteach_list">
       <property name="geometry">
        <rect>
-        <x>260</x>
+        <x>400</x>
         <y>10</y>
         <width>111</width>
         <height>181</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="armtarget">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>70</y>
+        <width>80</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>target</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="armtarget_list">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>50</y>
+        <width>80</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="armtarget_name">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>10</y>
+        <width>80</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="armsave_target">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>30</y>
+        <width>80</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>保存坐标点</string>
       </property>
      </widget>
     </widget>
@@ -1936,6 +1969,19 @@ action</string>
        <string>关于我们:
         您可以通过搜索微信公众号:元创兴科技,来了解我们及获取教
 程,当然也可访问官网：www.reinovo.com</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_36">
+      <property name="geometry">
+       <rect>
+        <x>470</x>
+        <y>200</y>
+        <width>40</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>v1.0</string>
       </property>
      </widget>
     </widget>

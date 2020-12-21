@@ -240,6 +240,12 @@ ReinovoControl::ReinovoControl(QWidget* parent):rviz::Panel(parent),ui(new Ui::F
 
     uithread = boost::thread(boost::bind(&ReinovoControl::ui_thread, this));
 
+
+    //*************其他
+    // string str;
+    // n.param<std::string>("/json_file/map_file", str, ".");
+
+    // ofile.file_open(str+"/doc/reinovo_control.log");
     //开启多线程接收
     ros::AsyncSpinner spinner(3); 
     spinner.start();

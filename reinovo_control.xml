@@ -6,4 +6,13 @@
      
     </description>
   </class>
+
+  <!--<class name="Arm"
+         type="Arm"
+         base_class_type="rviz::Panel">
+
+    <description>
+     
+    </description>
+  </class>-->
 </library>

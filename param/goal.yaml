@@ -1,6 +1,6 @@
 navgoal:
 - {name: goal0, pose.th: 0.0, pose.x: 0.0, pose.y: 0.0}
 - {name: zero, pose.th: 0.0, pose.x: 0.0, pose.y: 0.0}
-- {name: cdz, pose.th: 1.63, pose.x: 0.55, pose.y: 1.16}
-- {name: cnc1, pose.th: -1.6, pose.x: 1.77, pose.y: -0.83}
-- {name: cnc2, pose.th: 0.0, pose.x: 2.58, pose.y: 0.61}
+- {name: cnc1, pose.th: -1.64, pose.x: 1.43, pose.y: -0.75}
+- {name: cnc2, pose.th: 0.0, pose.x: 2.76, pose.y: 0.63}
+- {name: cdz, pose.th: -1.41, pose.x: -0.32, pose.y: -1.38}

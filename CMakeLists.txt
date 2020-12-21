@@ -223,6 +223,9 @@ set(reinovo_SRCS
     src/teach.cpp
     src/combin.cpp
     src/dispatch.cpp
+
+    # src/file.h
+    # src/file.cpp
 )
  add_library(reinovo_control
     ${reinovo_SRCS}

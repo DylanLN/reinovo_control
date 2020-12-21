@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+
+#rospy 部分,很多用cpp实现太麻烦,故用rospy
+
 '''JsonFile ROS Node'''
 import sys
 import os
@@ -196,7 +199,6 @@ class JsonFile(object):
             data_task.name = task_dict['name'].encode('gbk')
             data_task.step = task_dict['step']
             for step in range(0,data_task.step):
-                print step
                 data_action = action()
                 action_dict = task_dict['action'][step]
                 data_action.name = action_dict['name'].encode('gbk')

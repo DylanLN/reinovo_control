@@ -275,7 +275,7 @@ ui按钮增大,适应触摸屏机器人
 ## 其他
 	该软件默认开启分布式通信,主机ip为192,.168.8.100,
     
-    如果想关闭打开/icon/reinovo_control.sh文件屏蔽掉:
+    如果想关闭打开./icon/reinovo_control.sh文件屏蔽掉:
     
     export ROS_MASTER_URI=http://192.168.8.100:11311
     
