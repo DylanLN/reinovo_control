@@ -224,8 +224,8 @@ set(reinovo_SRCS
     src/combin.cpp
     src/dispatch.cpp
 
-    # src/file.h
-    # src/file.cpp
+    src/file.h
+    src/file.cpp
 )
  add_library(reinovo_control
     ${reinovo_SRCS}
@@ -234,6 +234,7 @@ set(reinovo_SRCS
    ${catkin_LIBRARIES}
    ${QT_LIBREARIES}
    ${Boost_LIBRARIES}
+   yaml-cpp
  )
 
 add_executable(blank

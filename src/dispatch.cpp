@@ -1,6 +1,30 @@
 #include "reinovo_control.h"
 
 /*******************    调度    **********************/
+bool ReinovoControl::dispatch_init()
+{
+    connect(ui->open_dispatch, SIGNAL(clicked()), this, SLOT(fopen_dispatch()));         //发布正vx
+    connect(ui->start_dispatch, SIGNAL(clicked()), this, SLOT(fstart_dispatch()));         //发布正vx
+    connect(ui->pause_dispatch, SIGNAL(clicked()), this, SLOT(fpause_dispatch()));         //发布正vx
+    connect(ui->recover_dispatch, SIGNAL(clicked()), this, SLOT(frecover_dispatch()));         //发布正vx
+    connect(ui->refresh_path1, SIGNAL(clicked()), this, SLOT(frefresh_path1()));         //发布正vx
+    connect(ui->load_path1, SIGNAL(clicked()), this, SLOT(fload_path1()));         //发布正vx
+    connect(ui->auto_charging, SIGNAL(clicked()), this, SLOT(fauto_charging()));         //发布正vx
+
+    flag_dispatch=0;
+    flag_charging=0;
+    dispatch_status = 0;
+
+    //打开调度
+    open_dispatch = nh_.serviceClient<reinovo_control::ask>("open_dispatch");
+
+    //暂停调度
+    suspend_client =  nh_.serviceClient<std_srvs::SetBool>("center_suspend");
+
+    return true;
+}
+
+
 //开启、关闭调度
 void ReinovoControl::fopen_dispatch()
 {

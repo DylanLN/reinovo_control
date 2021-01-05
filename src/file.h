@@ -22,22 +22,36 @@ public:
 
 private:
     string filename;
-    ifstream infile;
+    ofstream infile;
 };
 
 class Yaml
 {
 public:
-    Yaml();
-    ~Yaml();
-    bool file_write(string text);
-    string file_read();
-    bool file_open(string name);
-    bool file_close();
+    Yaml(){
+    }
+    ~Yaml(){
+    }
+    //写
+    bool file_write()
+    {
+        ofstream fout(filename);
+        fout << config;
+        fout.close();
+    }
+
+    YAML::Node load_file(string name){
+        filename = name;
+        config = YAML::LoadFile(filename);
+        return config;
+    }
+public:
+    YAML::Node config;
 
 private:
     string filename;
-    ifstream infile;
+    // ofstream fout;
+    // ifstream infile;
 };
 
 #endif //FILE_H

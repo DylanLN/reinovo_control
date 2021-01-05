@@ -1,0 +1,18 @@
+fun: 6
+action0: 
+  name: gotopos
+  num: 6
+  param0: x
+  param1: y
+  param2: z
+  param3: r
+  param4: p
+  param4: y
+action1: 
+  name: gotoar
+  num: 1
+  param0: number
+action2: 
+  name: pump
+  num: 1
+  param0: bool

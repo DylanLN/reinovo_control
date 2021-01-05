@@ -14,10 +14,12 @@ string ReinovoControl::get_time()
 }
 
 //ui 的回调函数
+//主要是机器人导航所用
 void ReinovoControl::ui_thread()
 {
     ros::Rate loop(5);
     while(ros::ok()){
+        //机器人goto
         if (ui_state == 1)
         {
             reinovo_control::goto_navgoal srv;
@@ -43,14 +45,63 @@ void ReinovoControl::ui_thread()
             ui_state=0;
             ui->total_output->appendPlainText(QString::fromStdString(get_time())+"goto 已到达");   
         }
+        //机械臂goto
+        else if (ui_state == 2)
+        {
+            if (ui->armtarget->isChecked()){
+                arm_controller::move srv;
+
+                srv.request.pose = arm_goal[ui->armtarget_list->currentIndex()].pose;
+                if (armgoto_client.call(srv))
+                {
+                    if (srv.response.success)
+                    {
+                        ui->total_output->appendPlainText(QString::fromStdString(get_time()) + "已到达");
+                    }else{
+                        ui->total_output->appendPlainText(QString::fromStdString(get_time()) + "失败");
+                    }
+                }else{
+                    ui->total_output->appendPlainText(QString::fromStdString(get_time()) + "未连接到机械臂");
+                }
+            }
+            ui_state=0;
+        }
+        //追踪ar
+        else if (ui_state == 3)
+        {
+            arm_controller::PickPlace srv;
+            srv.request.number = ui->ar_value->value();
+            if (argoto_client.call(srv))
+            {
+                if (srv.response.success)
+                {
+                    ui->total_output->appendPlainText(QString::fromStdString(get_time()) + "已到达");
+                }else{
+                    ui->total_output->appendPlainText(QString::fromStdString(get_time()) + "失败");
+                }
+            }else{
+                ui->total_output->appendPlainText(QString::fromStdString(get_time()) + "未连接到机械臂");
+            }
+            ui_state=0;
+        }
         loop.sleep();
     }
 }
 
+void ReinovoControl::tabwidget(int index)
+{
+    if (index == 0)
+    {
+        /* code for True */
+    }else if (index == 3)
+    {
+        arm_refresh();
+    }
+    
+    
+}
 
 
-/*******************    ros    **********************/
-/*******************    ros    **********************/
 
 //构造函数
 ReinovoControl::ReinovoControl(QWidget* parent):rviz::Panel(parent),ui(new Ui::Form),timer_(new QTimer),client("center_server",true)
@@ -62,188 +113,41 @@ ReinovoControl::ReinovoControl(QWidget* parent):rviz::Panel(parent),ui(new Ui::F
     ROS_INFO("ReinovoControl");
     pub = nh_.advertise<std_msgs::String>("ui", 10);
 
+    //tab
+    connect(ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(tabwidget(int)));
+
 //槽函数初始化
     //首页
-    
-    connect(ui->reinovo_control, SIGNAL(clicked()), this, SLOT(freinovo_control()));    //打开、关闭驱动
-    connect(ui->open_driver, SIGNAL(clicked()), this, SLOT(fopen_driver()));    //打开、关闭驱动
-    connect(ui->open_slam, SIGNAL(clicked()), this, SLOT(fopen_slam()));    //开始、关闭建图
-    connect(ui->save_map, SIGNAL(clicked()), this, SLOT(fsave_map()));      //保存地图
-    connect(ui->open_all, SIGNAL(clicked()), this, SLOT(fopen_all()));      //open all
-    connect(ui->other1, SIGNAL(clicked()), this, SLOT(fother1()));      //other1
-    connect(ui->other2, SIGNAL(clicked()), this, SLOT(fother2()));      //other1
-    connect(ui->other3, SIGNAL(clicked()), this, SLOT(fother3()));      //other1
-
-    n.param<string>("other1", strother[0], "其他模块1");
-    n.param<string>("other2", strother[1], "其他模块2");
-    n.param<string>("other3", strother[2], "其他模块3");
-    ui->other1->setText(QString::fromStdString(strother[0]));
-    ui->other2->setText(QString::fromStdString(strother[1]));
-    ui->other3->setText(QString::fromStdString(strother[2]));
-
+    home_init();
 
     //Teleop
-    connect(ui->speed_enable, SIGNAL(clicked()), this, SLOT(fspeed_enable()));   //速度使能
-    ui->vx_cmd->setSuffix("m/s");       //设置后缀
-    ui->vy_cmd->setSuffix("m/s");       //设置后缀
-    ui->vth_cmd->setSuffix("rad/s");       //设置后缀
-
-    connect(ui->vx_plus, SIGNAL(clicked()), this, SLOT(fpub_vxplus()));         //发布正vx
-    connect(ui->vx_minus, SIGNAL(clicked()), this, SLOT(fpub_vxminus()));         //发布正vx
-    connect(ui->vy_plus, SIGNAL(clicked()), this, SLOT(fpub_vyplus()));         //发布正vx
-    connect(ui->vy_minus, SIGNAL(clicked()), this, SLOT(fpub_vyminus()));         //发布正vx
-    connect(ui->vth_plus, SIGNAL(clicked()), this, SLOT(fpub_vthplus()));         //发布正vx
-    connect(ui->vth_minus, SIGNAL(clicked()), this, SLOT(fpub_vthminus()));         //发布正vx
-    connect(ui->vel_stop, SIGNAL(clicked()), this, SLOT(fvel_stop()));         //发布正vx
-
-
+    teleop_init();
 
     //导航
-    connect(ui->refresh_map, SIGNAL(clicked()), this, SLOT(frefresh_map()));         //发布正vx
-    connect(ui->switch_map, SIGNAL(clicked()), this, SLOT(fswitch_map()));         //发布正vx
-    connect(ui->delete_map, SIGNAL(clicked()), this, SLOT(fdelete_map()));         //发布正vx
-    connect(ui->open_nav, SIGNAL(clicked()), this, SLOT(fopen_nav()));         //发布正vx
-    connect(ui->refresh_target, SIGNAL(clicked()), this, SLOT(frefresh_target()));         //发布正vx
-    connect(ui->goto_target, SIGNAL(clicked()), this, SLOT(fgoto_target()));         //发布正vx
-    connect(ui->delete_target, SIGNAL(clicked()), this, SLOT(fdelete_target()));         //发布正vx
-    connect(ui->get_gesture, SIGNAL(clicked()), this, SLOT(fget_gesture()));         //发布正vx
-    connect(ui->save_target, SIGNAL(clicked()), this, SLOT(fsave_target()));         //发布正vx
-
-    //手臂
-    //开启手臂
-    connect(ui->open_arm, SIGNAL(clicked()), this, SLOT(fopen_arm()));
-    connect(ui->pump, SIGNAL(clicked()), this, SLOT(fpump()));
-    connect(ui->unlock_arm, SIGNAL(clicked()), this, SLOT(funlock_arm()));
-    connect(ui->open_cam, SIGNAL(clicked()), this, SLOT(fopen_cam()));
-    
-    arm_cmd = 3;
-    flag_arm = 0;
-    flag_cam = 0;
-    connect(ui->micro, SIGNAL(clicked()), this, SLOT(fmicro()));   //微调
-    connect(ui->plusx, SIGNAL(clicked()), this, SLOT(fplusx()));         //发布正vx
-    connect(ui->plusy, SIGNAL(clicked()), this, SLOT(fplusy()));         //发布正vx
-    connect(ui->plusz, SIGNAL(clicked()), this, SLOT(fplusz()));         //发布正vx
-    connect(ui->redx, SIGNAL(clicked()), this, SLOT(fredx()));         //发布正vx
-    connect(ui->redy, SIGNAL(clicked()), this, SLOT(fredy()));         //发布正vx
-    connect(ui->redz, SIGNAL(clicked()), this, SLOT(fredz()));         //发布正vx
-    ui->plusx->setAutoRepeat(true);       //允许 自动重复
-    ui->plusx->setAutoRepeatDelay(100);       //设置重复操作的时延
-    ui->plusx->setAutoRepeatInterval(100);       //设置自动操作的间隔
-    ui->plusy->setAutoRepeat(true);       //允许 自动重复
-    ui->plusy->setAutoRepeatDelay(100);       //设置重复操作的时延
-    ui->plusy->setAutoRepeatInterval(100);       //设置自动操作的间隔
-    ui->plusz->setAutoRepeat(true);       //允许 自动重复
-    ui->plusz->setAutoRepeatDelay(100);       //设置重复操作的时延
-    ui->plusz->setAutoRepeatInterval(100);       //设置自动操作的间隔
-    ui->redx->setAutoRepeat(true);       //允许 自动重复
-    ui->redx->setAutoRepeatDelay(100);       //设置重复操作的时延
-    ui->redx->setAutoRepeatInterval(100);       //设置自动操作的间隔
-    ui->redy->setAutoRepeat(true);       //允许 自动重复
-    ui->redy->setAutoRepeatDelay(100);       //设置重复操作的时延
-    ui->redy->setAutoRepeatInterval(100);       //设置自动操作的间隔
-    ui->redz->setAutoRepeat(true);       //允许 自动重复
-    ui->redz->setAutoRepeatDelay(100);       //设置重复操作的时延
-    ui->redz->setAutoRepeatInterval(100);       //设置自动操作的间隔
-
-
-
+    nav_init();
     //示教
-    connect(ui->refresh_teach, SIGNAL(clicked()), this, SLOT(frefresh_teach()));         //发布正vx
-    connect(ui->teach_list, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(fteach_list(QListWidgetItem*)));         //发布正vx
-    connect(ui->teach_rea, SIGNAL(clicked()), this, SLOT(fteach_rea()));         //发布正vx
-    connect(ui->delete_teach, SIGNAL(clicked()), this, SLOT(fdelete_teach()));         //发布正vx
-    connect(ui->create_teach, SIGNAL(clicked()), this, SLOT(fcreate_teach()));         //发布正vx
-    connect(ui->add_action, SIGNAL(clicked()), this, SLOT(fadd_action()));         //发布正vx
-    connect(ui->delete_action, SIGNAL(clicked()), this, SLOT(fdelete_action()));         //发布正vx
-    connect(ui->teach_info, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(fteach_info(QListWidgetItem*)));         //发布正vx
-    connect(ui->param_info, SIGNAL(cellChanged(int,int)), this, SLOT(fparam_info(int,int)));         //发布正vx
-    connect(ui->makefile2, SIGNAL(clicked()), this, SLOT(fmakefile2()));         //发布正vx
+    teach_init();
 
+    //arm
+    arm_init();
 
     //组合
-    //qt
-    connect(ui->refresh_path, SIGNAL(clicked()), this, SLOT(frefresh_path()));         //发布正vx
-    connect(ui->path_list, SIGNAL(currentIndexChanged(QString)), this, SLOT(fpath_list(QString)));         //发布正vx
-    connect(ui->delete_path, SIGNAL(clicked()), this, SLOT(fdelete_path()));         //发布正vx
-    connect(ui->create_path, SIGNAL(clicked()), this, SLOT(fcreate_path()));         //发布正vx
-    //connect(ui->path_info, SIGNAL(cellChanged(int,int)), this, SLOT(fpath_info(int,int)));         //发布正vx
-    connect(ui->delete_target1, SIGNAL(clicked()), this, SLOT(fdelete_target1()));         //发布正vx
-    connect(ui->add_target, SIGNAL(clicked()), this, SLOT(fadd_target()));         //发布正vx
-    connect(ui->mount, SIGNAL(clicked()), this, SLOT(fmount()));         //发布正vx
-    connect(ui->makefile, SIGNAL(clicked()), this, SLOT(fmakefile()));         //发布正vx
-    //ros
-    get_path = nh_.serviceClient<reinovo_control::pathsrv>("get_path");
-    pub_path = nh_.serviceClient<reinovo_control::pathserver>("pub_path");
-
+    combin_init();
 
     //调度
-    connect(ui->open_dispatch, SIGNAL(clicked()), this, SLOT(fopen_dispatch()));         //发布正vx
-    connect(ui->start_dispatch, SIGNAL(clicked()), this, SLOT(fstart_dispatch()));         //发布正vx
-    connect(ui->pause_dispatch, SIGNAL(clicked()), this, SLOT(fpause_dispatch()));         //发布正vx
-    connect(ui->recover_dispatch, SIGNAL(clicked()), this, SLOT(frecover_dispatch()));         //发布正vx
-    connect(ui->refresh_path1, SIGNAL(clicked()), this, SLOT(frefresh_path1()));         //发布正vx
-    connect(ui->load_path1, SIGNAL(clicked()), this, SLOT(fload_path1()));         //发布正vx
-    connect(ui->auto_charging, SIGNAL(clicked()), this, SLOT(fauto_charging()));         //发布正vx
+    dispatch_init();
 
 
 //数据初始化
-    //首页
-    flag_driver=0;
-    flag_slam=0;
-    flag_openall=0;
-    flag_other[0]=0;
-    flag_other[1]=0;
-    flag_other[2]=0;
-    //Teleop
-    flag_speed=0;
-    //导航
-    flag_nav=0;
-    //调度
-    flag_dispatch=0;
-    flag_charging=0;
-    dispatch_status = 0;
 
     ui_state=0;
 
-    //保存map
-    save_map = nh_.serviceClient<reinovo_control::ask>("save_map");
-
     key_client = nh_.serviceClient<reinovo_control::ask>("key_server");
-    get_pose = nh_.serviceClient<reinovo_control::get_navgoal>("get_pose");
-
-    get_navgoal = nh_.serviceClient<reinovo_control::navgoalsrv>("get_goal");
-    save_navgoal = nh_.serviceClient<reinovo_control::navgoalserver>("save_navgoal");
-
-    get_map = nh_.serviceClient<reinovo_control::navgoalsrv>("get_map");
-    delete_map = nh_.serviceClient<reinovo_control::ask>("delete_map");
-    goto_pose =  nh_.serviceClient<reinovo_control::goto_navgoal>("goto_pose");
-
-    switch_map = nh_.serviceClient<reinovo_control::ask>("switch_map");
-    //获取action模板
-    get_actiontem = nh_.serviceClient<reinovo_control::actionsrv>("get_template");
-    //获取任务task
-    get_task = nh_.serviceClient<reinovo_control::tasksrv>("get_task");
-    //保存task文件
-    save_task = nh_.serviceClient<reinovo_control::taskserver>("save_task");
-    //打开调度
-    open_dispatch = nh_.serviceClient<reinovo_control::ask>("open_dispatch");
-
-    //发布arm运行速度
-    armvel_pub = nh_.advertise<geometry_msgs::Twist>("/arm_controller/cmd_vel", 10);    //发布速度信息
-    //接收手臂坐标
-    arm_sub = nh_.subscribe("arm_controller/position_info",100,&ReinovoControl::position_callback,this);
-    //气泵控制客户端
-    pump_client = nh_.serviceClient<std_srvs::SetBool>("pump");
-    unlock_client = nh_.serviceClient<std_srvs::SetBool>("unlock");
-    //暂停调度
-    suspend_client =  nh_.serviceClient<std_srvs::SetBool>("center_suspend");
 
     uithread = boost::thread(boost::bind(&ReinovoControl::ui_thread, this));
 
-
     //*************其他
-    // string str;
-    // n.param<std::string>("/json_file/map_file", str, ".");
+    n.param<std::string>("/json_file/map_file", map_file, ".");
 
     // ofile.file_open(str+"/doc/reinovo_control.log");
     //开启多线程接收
@@ -257,6 +161,7 @@ ReinovoControl::~ReinovoControl()
 {
     actionthread.interrupt();
     uithread.interrupt();
+    uithread.join();
     delete timer_;
     delete ui;
     ROS_DEBUG_STREAM("reinovo control已关闭");

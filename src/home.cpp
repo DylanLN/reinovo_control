@@ -2,6 +2,39 @@
 
 /*******************    首页    **********************/
 
+bool ReinovoControl::home_init()
+{
+    connect(ui->reinovo_control, SIGNAL(clicked()), this, SLOT(freinovo_control()));    //打开、关闭驱动
+    connect(ui->open_driver, SIGNAL(clicked()), this, SLOT(fopen_driver()));    //打开、关闭驱动
+    connect(ui->open_slam, SIGNAL(clicked()), this, SLOT(fopen_slam()));    //开始、关闭建图
+    connect(ui->save_map, SIGNAL(clicked()), this, SLOT(fsave_map()));      //保存地图
+    connect(ui->open_all, SIGNAL(clicked()), this, SLOT(fopen_all()));      //open all
+    connect(ui->other1, SIGNAL(clicked()), this, SLOT(fother1()));      //other1
+    connect(ui->other2, SIGNAL(clicked()), this, SLOT(fother2()));      //other1
+    connect(ui->other3, SIGNAL(clicked()), this, SLOT(fother3()));      //other1
+
+    n.param<string>("other1", strother[0], "其他模块1");
+    n.param<string>("other2", strother[1], "其他模块2");
+    n.param<string>("other3", strother[2], "其他模块3");
+    ui->other1->setText(QString::fromStdString(strother[0]));
+    ui->other2->setText(QString::fromStdString(strother[1]));
+    ui->other3->setText(QString::fromStdString(strother[2]));
+
+    //首页
+    flag_driver=0;
+    flag_slam=0;
+    flag_openall=0;
+    flag_other[0]=0;
+    flag_other[1]=0;
+    flag_other[2]=0;
+
+    //保存map
+    save_map = nh_.serviceClient<reinovo_control::ask>("save_map");
+
+    return true;
+}
+
+
 void ReinovoControl::freinovo_control()
 {
     ui->total_output->appendPlainText(QString::fromStdString(get_time())+ "reinovo control 是一款开源的机器人控制软件,用户可根据自己需求修改.可通过登录深圳市元创兴科技有限公司官网www.reinovo.com或其他方式联系我们." ); 

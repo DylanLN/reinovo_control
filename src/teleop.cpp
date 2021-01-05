@@ -1,6 +1,29 @@
 #include "reinovo_control.h"
 
 /*******************    Teleop    **********************/
+bool ReinovoControl::teleop_init()
+{
+    //Teleop
+    connect(ui->speed_enable, SIGNAL(clicked()), this, SLOT(fspeed_enable()));   //速度使能
+    ui->vx_cmd->setSuffix("m/s");       //设置后缀
+    ui->vy_cmd->setSuffix("m/s");       //设置后缀
+    ui->vth_cmd->setSuffix("rad/s");       //设置后缀
+
+    connect(ui->vx_plus, SIGNAL(clicked()), this, SLOT(fpub_vxplus()));         //发布正vx
+    connect(ui->vx_minus, SIGNAL(clicked()), this, SLOT(fpub_vxminus()));         //发布正vx
+    connect(ui->vy_plus, SIGNAL(clicked()), this, SLOT(fpub_vyplus()));         //发布正vx
+    connect(ui->vy_minus, SIGNAL(clicked()), this, SLOT(fpub_vyminus()));         //发布正vx
+    connect(ui->vth_plus, SIGNAL(clicked()), this, SLOT(fpub_vthplus()));         //发布正vx
+    connect(ui->vth_minus, SIGNAL(clicked()), this, SLOT(fpub_vthminus()));         //发布正vx
+    connect(ui->vel_stop, SIGNAL(clicked()), this, SLOT(fvel_stop()));         //发布正vx
+
+    //Teleop
+    flag_speed=0;
+    
+    return true;
+}
+
+
 //速度使能
 void ReinovoControl::fspeed_enable()
 {

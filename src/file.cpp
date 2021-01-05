@@ -1,4 +1,5 @@
 #include "file.h"
+using namespace std;
 
 File::File()
 {
@@ -14,7 +15,7 @@ bool File::file_open(string name)
 //写入文件
 bool File::file_write(string text)
 {
-    infile << text << endl;
+    infile << text;
     return true;
 }
 

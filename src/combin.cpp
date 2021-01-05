@@ -1,6 +1,26 @@
 #include "reinovo_control.h"
 
 /*******************    组合    **********************/
+bool ReinovoControl::combin_init()
+{
+    //qt
+    connect(ui->refresh_path, SIGNAL(clicked()), this, SLOT(frefresh_path()));         //发布正vx
+    connect(ui->path_list, SIGNAL(currentIndexChanged(QString)), this, SLOT(fpath_list(QString)));         //发布正vx
+    connect(ui->delete_path, SIGNAL(clicked()), this, SLOT(fdelete_path()));         //发布正vx
+    connect(ui->create_path, SIGNAL(clicked()), this, SLOT(fcreate_path()));         //发布正vx
+    //connect(ui->path_info, SIGNAL(cellChanged(int,int)), this, SLOT(fpath_info(int,int)));         //发布正vx
+    connect(ui->delete_target1, SIGNAL(clicked()), this, SLOT(fdelete_target1()));         //发布正vx
+    connect(ui->add_target, SIGNAL(clicked()), this, SLOT(fadd_target()));         //发布正vx
+    connect(ui->mount, SIGNAL(clicked()), this, SLOT(fmount()));         //发布正vx
+    connect(ui->makefile, SIGNAL(clicked()), this, SLOT(fmakefile()));         //发布正vx
+    //ros
+    get_path = nh_.serviceClient<reinovo_control::pathsrv>("get_path");
+    pub_path = nh_.serviceClient<reinovo_control::pathserver>("pub_path");
+
+    return true;
+}
+
+
 //刷新路径
 void ReinovoControl::frefresh_path()
 {

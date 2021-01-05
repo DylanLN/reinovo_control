@@ -1,6 +1,30 @@
 #include "reinovo_control.h"
 
 /*******************    示教    **********************/
+bool ReinovoControl::teach_init()
+{
+    connect(ui->refresh_teach, SIGNAL(clicked()), this, SLOT(frefresh_teach()));         //发布正vx
+    connect(ui->teach_list, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(fteach_list(QListWidgetItem*)));         //发布正vx
+    connect(ui->teach_rea, SIGNAL(clicked()), this, SLOT(fteach_rea()));         //发布正vx
+    connect(ui->delete_teach, SIGNAL(clicked()), this, SLOT(fdelete_teach()));         //发布正vx
+    connect(ui->create_teach, SIGNAL(clicked()), this, SLOT(fcreate_teach()));         //发布正vx
+    connect(ui->add_action, SIGNAL(clicked()), this, SLOT(fadd_action()));         //发布正vx
+    connect(ui->delete_action, SIGNAL(clicked()), this, SLOT(fdelete_action()));         //发布正vx
+    connect(ui->teach_info, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(fteach_info(QListWidgetItem*)));         //发布正vx
+    connect(ui->param_info, SIGNAL(cellChanged(int,int)), this, SLOT(fparam_info(int,int)));         //发布正vx
+    connect(ui->makefile2, SIGNAL(clicked()), this, SLOT(fmakefile2()));         //发布正vx
+
+    //获取action模板
+    get_actiontem = nh_.serviceClient<reinovo_control::actionsrv>("get_template");
+    //获取任务task
+    get_task = nh_.serviceClient<reinovo_control::tasksrv>("get_task");
+    //保存task文件
+    save_task = nh_.serviceClient<reinovo_control::taskserver>("save_task");
+
+    return true;
+}
+
+
 void ReinovoControl::frefresh_teach()  //刷新示教
 {
     reinovo_control::actionsrv srv;
@@ -14,8 +38,7 @@ void ReinovoControl::frefresh_teach()  //刷新示教
         {
             ui->action_list->addItem(QString::fromStdString(v_actiontem[i].name)); //不带图标
         }
-    }else
-    {
+    }else{
         ui->total_output->appendPlainText(QString::fromStdString(get_time())+"错误：未连接到jsonfile节点！");   
     }
     reinovo_control::tasksrv srv1;
@@ -93,6 +116,7 @@ void ReinovoControl::fcreate_teach()   //创建示教
         if (ui->teach_name->text().toStdString() == v_task[i].name)
         {
             cur = 1;
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"重名");
             break;
         }
     }
@@ -114,8 +138,6 @@ void ReinovoControl::fcreate_teach()   //创建示教
             ui->total_output->appendPlainText(QString::fromStdString(get_time())+"创建示教"+ui->teach_name->text());
 
         }
-    }else{
-        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"重名");
     }
     
 }

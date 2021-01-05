@@ -1,6 +1,36 @@
 #include "reinovo_control.h"
 
 /*******************    导航    **********************/
+
+bool ReinovoControl::nav_init()
+{
+    connect(ui->refresh_map, SIGNAL(clicked()), this, SLOT(frefresh_map()));         //发布正vx
+    connect(ui->switch_map, SIGNAL(clicked()), this, SLOT(fswitch_map()));         //发布正vx
+    connect(ui->delete_map, SIGNAL(clicked()), this, SLOT(fdelete_map()));         //发布正vx
+    connect(ui->open_nav, SIGNAL(clicked()), this, SLOT(fopen_nav()));         //发布正vx
+    connect(ui->refresh_target, SIGNAL(clicked()), this, SLOT(frefresh_target()));         //发布正vx
+    connect(ui->goto_target, SIGNAL(clicked()), this, SLOT(fgoto_target()));         //发布正vx
+    connect(ui->delete_target, SIGNAL(clicked()), this, SLOT(fdelete_target()));         //发布正vx
+    connect(ui->get_gesture, SIGNAL(clicked()), this, SLOT(fget_gesture()));         //发布正vx
+    connect(ui->save_target, SIGNAL(clicked()), this, SLOT(fsave_target()));         //发布正vx
+    //导航
+    flag_nav=0;
+
+    get_pose = nh_.serviceClient<reinovo_control::get_navgoal>("get_pose");
+
+    get_navgoal = nh_.serviceClient<reinovo_control::navgoalsrv>("get_goal");
+    save_navgoal = nh_.serviceClient<reinovo_control::navgoalserver>("save_navgoal");
+
+    get_map = nh_.serviceClient<reinovo_control::navgoalsrv>("get_map");
+    delete_map = nh_.serviceClient<reinovo_control::ask>("delete_map");
+    goto_pose =  nh_.serviceClient<reinovo_control::goto_navgoal>("goto_pose");
+
+    switch_map = nh_.serviceClient<reinovo_control::ask>("switch_map");
+
+    return true;
+}
+
+
 //地图列表
 void ReinovoControl::frefresh_map()
 {

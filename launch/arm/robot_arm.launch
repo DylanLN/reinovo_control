@@ -5,6 +5,7 @@
 	<!--以上勿动-->
 
     <node pkg="arm_controller" type="arm_controller" name="arm_controller" output="screen"/>
+    <node pkg="arm_controller" type="arm_ar" name="arm_ar" output="screen"/>
 
 </launch>
 

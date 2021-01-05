@@ -26,7 +26,8 @@
 #include <unistd.h>
 #include "vector"
 
-// #include "file.h"
+//自定义file操作
+#include "file.h"
 
 /*******************    ros    **********************/
 #include "ros/ros.h"
@@ -53,12 +54,20 @@
 #include "reinovo_control/taskserver.h"
 
 #include "arm_controller/control.h"
+#include "arm_controller/move.h"
+#include "arm_controller/PickPlace.h"
 
 #include "oryxbot_msgs/centerAction.h"
 #include <actionlib/client/simple_action_client.h>
 #include <actionlib/client/terminal_state.h>
 
 typedef actionlib::SimpleActionClient<oryxbot_msgs::centerAction> center_client;
+
+struct ARMGOAL{
+    string goalname;
+    arm_controller::control pose;
+};
+const string teachname[3] = {"goto","argoto","pump"};
 
 using namespace std;
 
@@ -99,7 +108,10 @@ public:
 
 //按键槽函数
 public slots:
+    //
+    void tabwidget(int index);
     //首页
+    bool home_init();
     void freinovo_control();
     void fopen_driver();    //打开驱动
     void fopen_slam();  //打开建图
@@ -108,7 +120,9 @@ public slots:
     void fother1();   //other1
     void fother2();   //other2
     void fother3();   //other3
+
     //Teleop
+    bool teleop_init();
     void fspeed_enable();   //速度使能
     void fpub_vxplus();    //发布+vx指令
     void fpub_vxminus();    //发布-vx指令
@@ -119,6 +133,7 @@ public slots:
     void fvel_stop();    //发布stop指令
 
     //导航
+    bool nav_init();
     void frefresh_map();       //地图列表
     void fswitch_map();     //切换地图
     void fdelete_map();     //删除地图
@@ -130,22 +145,33 @@ public slots:
     void fsave_target();    //保存目标点
 
     //arm
+    bool arm_init();//初始化
+    bool arm_refresh();
     void fopen_arm();   //开启关闭手臂
     void fpump();   //气泵
     void funlock_arm();     //电机锁
-    void fopen_cam();
-    void fplusx();       
-    void fplusy();
-    void fplusz();
+    void fopen_cam();       //打开相机
+    void fplusx();          //x移动
+    void fplusy();          //y移动
+    void fplusz();          //z
     void fredx();
     void fredy();
     void fredz();
-    void fmicro();
-
-    void position_callback(const arm_controller::control& msg);
+    void fmicro();          //微调
+    void farmsave_target(); //保存目标点
+    void farmdelete_target();//删除目标点
+    void farmtarget();//目标点勾选
+    void far();//ar勾选
+    void farm_goto();//goto
+    void fenther_teach();//进入示教
+    void position_callback(const arm_controller::control& msg); //回调函数
+    //示教所用
+    void ftpump();   //气泵
+    void ftarm_goto();//goto
 
 
     //示教
+    bool teach_init();
     void frefresh_teach();  //刷新示教
     void fteach_list(QListWidgetItem* aItem);     //示教列表
     void fteach_rea();      //示教重现
@@ -157,6 +183,7 @@ public slots:
     void fparam_info(int currentRow, int currentColumn);    //参数被修改
     void fmakefile2();      //生成文件
     //组合
+    bool combin_init();
     void frefresh_path();   //刷新路径
     void fpath_list(QString text);      //路径列表
     void fdelete_path();    //删除路径
@@ -167,6 +194,7 @@ public slots:
     void fmount();          //挂载
     void fmakefile();      //生成文件
     //调度
+    bool dispatch_init();
     void fopen_dispatch();  //开启、关闭调度
     void fstart_dispatch(); //开始调度
     void fpause_dispatch(); //暂停调度
@@ -223,10 +251,18 @@ public:
 	ros::Subscriber arm_sub;
     ros::ServiceClient pump_client;
     ros::ServiceClient unlock_client;
+    ros::ServiceClient armgoto_client;
+    ros::ServiceClient argoto_client;
     arm_controller::control arm_pos;
+    vector<reinovo_control::task> v_taskarm;
+    reinovo_control::task task_arm;
     uint8_t flag_arm;
     uint8_t flag_cam;
+    uint8_t flag_teach;
     float arm_cmd;
+    Yaml arm_yaml;
+    vector<ARMGOAL> arm_goal;
+
     //示教
     ros::ServiceClient get_actiontem;
     ros::ServiceClient get_task;
@@ -241,6 +277,7 @@ public:
 /********************************************************************
     1-goto
 ********************************************************************/
+    string map_file;
     uint8_t ui_state;
     //所线程
     boost::thread uithread;

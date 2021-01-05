@@ -1,0 +1,13 @@
+armgoal:
+  - pose.x: 95.31999999999999
+    pose.y: -105.17
+    pose.z: 62.06
+    name: test0
+  - pose.x: 133.82
+    pose.y: 133.01
+    pose.z: 70.51000000000001
+    name: test1
+  - pose.z: 68.04000000000001
+    pose.y: -24.21
+    pose.x: 215.28
+    name: test2
