@@ -53,6 +53,9 @@ bool ReinovoControl::arm_init()
     //进入示教
     connect(ui->enther_teach, SIGNAL(clicked()), this, SLOT(fenther_teach()));
 
+    //保存示教
+    connect(ui->save_armteach, SIGNAL(clicked()), this, SLOT(fsave_armteach()));
+
 
 
 
@@ -320,8 +323,7 @@ void ReinovoControl::farm_goto()
     if (ui->armtarget->isChecked())
     {
         ui_state = 2;
-    }else if (ui->ar->isChecked())
-    {
+    }else if (ui->ar->isChecked()){
         ui_state = 3;
     }
 }
@@ -331,22 +333,20 @@ void ReinovoControl::fenther_teach()
 {
     if(flag_teach == 0){
         //气泵
-        connect(ui->pump, SIGNAL(clicked()), this, SLOT(ftpump()));
+        Connection_pump = connect(ui->pump, SIGNAL(clicked()), this, SLOT(ftpump()));
         //goto
-        connect(ui->arm_goto, SIGNAL(clicked()), this, SLOT(ftarm_goto()));
+        Connection_goto = connect(ui->arm_goto, SIGNAL(clicked()), this, SLOT(ftarm_goto()));
 
         //任务清空
         task_arm.action.clear();
-        ui->open_arm->setText("退出示教");
+        ui->enther_teach->setText("退出示教");
         flag_teach=1;
         ui->total_output->appendPlainText(QString::fromStdString(get_time())+"进入示教模式");
-    }else if(flag_arm == 1){
-        //气泵断开
-        disconnect(ui->pump, SIGNAL(ftpump()), 0, 0);
-        //goto断开
-        disconnect(ui->arm_goto, SIGNAL(ftarm_goto()), 0, 0);
+    }else if(flag_teach == 1){
+        ui->pump->disconnect(Connection_goto);
+        ui->arm_goto->disconnect(Connection_pump);
 
-        ui->open_arm->setText("进入示教");
+        ui->enther_teach->setText("进入示教");
         flag_teach=0;
         ui->total_output->appendPlainText(QString::fromStdString(get_time())+"退出示教模式");
     }
@@ -369,6 +369,97 @@ void ReinovoControl::ftpump()
     aItem->setFlags(Qt::ItemIsSelectable |Qt::ItemIsUserCheckable |Qt::ItemIsEnabled);
     ui->armteach_list->addItem(aItem);
 }
+
+//goto示教
+void ReinovoControl::ftarm_goto()
+{
+    //已保存目标点
+    if (ui->armtarget->isChecked())
+    {
+        reinovo_control::action act;
+        act.name = "armgoto";
+        act.number = 3;
+        act.param_name.push_back("x");
+        act.param_name.push_back("y");
+        act.param_name.push_back("z");
+
+        act.param.push_back(arm_goal[ui->armtarget_list->currentIndex()].pose.position.x);
+        act.param.push_back(arm_goal[ui->armtarget_list->currentIndex()].pose.position.y);
+        act.param.push_back(arm_goal[ui->armtarget_list->currentIndex()].pose.position.z);
+
+        task_arm.action.push_back(act);
+
+        QListWidgetItem *aItem=new QListWidgetItem("new item");
+        aItem->setText("goto:" + QString::number(arm_goal[ui->armtarget_list->currentIndex()].pose.position.x)+","
+                               + QString::number(arm_goal[ui->armtarget_list->currentIndex()].pose.position.y)+","
+                               + QString::number(arm_goal[ui->armtarget_list->currentIndex()].pose.position.z)+",");
+        aItem->setFlags(Qt::ItemIsSelectable |Qt::ItemIsUserCheckable |Qt::ItemIsEnabled);
+        ui->armteach_list->addItem(aItem);
+
+    }else if (ui->ar->isChecked()){//ar码
+        reinovo_control::action act;
+        act.name = "argoto";
+        act.number = 1;
+        act.param_name.push_back("number");
+        act.param.push_back(ui->ar_value->value());
+
+        task_arm.action.push_back(act);
+
+        QListWidgetItem *aItem=new QListWidgetItem("new item");
+        aItem->setText("ar goto:" + QString::number(ui->ar_value->value()));
+        aItem->setFlags(Qt::ItemIsSelectable |Qt::ItemIsUserCheckable |Qt::ItemIsEnabled);
+        ui->armteach_list->addItem(aItem);
+    }else{
+        reinovo_control::action act;
+        act.name = "armgoto";
+        act.number = 3;
+        act.param_name.push_back("x");
+        act.param_name.push_back("y");
+        act.param_name.push_back("z");
+
+        act.param.push_back(arm_pos.position.x);
+        act.param.push_back(arm_pos.position.y);
+        act.param.push_back(arm_pos.position.z);
+        task_arm.action.push_back(act);
+
+        QListWidgetItem *aItem=new QListWidgetItem("new item");
+        aItem->setText("goto:" + QString::number(arm_pos.position.x)+","
+                               + QString::number(arm_pos.position.y)+","
+                               + QString::number(arm_pos.position.z)+",");
+        aItem->setFlags(Qt::ItemIsSelectable |Qt::ItemIsUserCheckable |Qt::ItemIsEnabled);
+        ui->armteach_list->addItem(aItem);
+    }
+}
+
+//保存示教
+void ReinovoControl::fsave_armteach()
+{
+    string text = ui->armteach_name->text().toStdString();
+    if(text == ""){
+        ui->total_output->appendPlainText(QString::fromStdString(get_time())+"请输入保存的示教程序名称");
+    }else{
+        //检查是否与现有程序重名
+        int flag = 0;
+        for (size_t i = 0; i < v_taskarm.size(); i++)
+        {
+            if(text == v_taskarm[i].name){
+                flag = 1;
+                ui->total_output->appendPlainText(QString::fromStdString(get_time())+"与已有程序重名");
+                break;
+            }
+        }
+        if (!flag)
+        {
+            task_arm.name = text;
+            //保存数据
+            v_taskarm.push_back(task_arm);
+            ui->total_output->appendPlainText(QString::fromStdString(get_time())+"已保存");
+            ui->armteach_list_2->addItem(ui->armteach_name->text());
+
+        }
+    }
+}
+
 
 
 //微调

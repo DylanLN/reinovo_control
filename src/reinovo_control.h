@@ -164,6 +164,7 @@ public slots:
     void far();//ar勾选
     void farm_goto();//goto
     void fenther_teach();//进入示教
+    void fsave_armteach();//保存示教
     void position_callback(const arm_controller::control& msg); //回调函数
     //示教所用
     void ftpump();   //气泵
@@ -256,6 +257,8 @@ public:
     arm_controller::control arm_pos;
     vector<reinovo_control::task> v_taskarm;
     reinovo_control::task task_arm;
+
+    QMetaObject::Connection Connection_pump,Connection_goto;
     uint8_t flag_arm;
     uint8_t flag_cam;
     uint8_t flag_teach;
