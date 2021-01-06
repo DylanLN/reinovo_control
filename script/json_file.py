@@ -51,7 +51,8 @@ class JsonFile(object):
             resp1 = killmap(True, "-")
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
-            
+        
+        time.sleep(2)
         exe_str = "source ~/.bashrc && "
         exe_str1 = "roslaunch reinovo_control robot_mapserver.launch map_file:=" + request.message + "&"
         print exe_str+exe_str1

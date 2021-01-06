@@ -461,7 +461,6 @@ void ReinovoControl::fsave_armteach()
 }
 
 
-
 //微调
 void ReinovoControl::fmicro()
 {
