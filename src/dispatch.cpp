@@ -11,6 +11,8 @@ bool ReinovoControl::dispatch_init()
     connect(ui->load_path1, SIGNAL(clicked()), this, SLOT(fload_path1()));         //发布正vx
     connect(ui->auto_charging, SIGNAL(clicked()), this, SLOT(fauto_charging()));         //发布正vx
 
+    connect(this,SIGNAL(AppendText(QString)),this,SLOT(fSlotAppendText(QString)));
+
     flag_dispatch=0;
     flag_charging=0;
     dispatch_status = 0;
@@ -24,6 +26,11 @@ bool ReinovoControl::dispatch_init()
     return true;
 }
 
+//自定义槽函数,多线程信息输出
+void ReinovoControl::fSlotAppendText(const QString &text)
+{
+    ui->dispatch_output->appendPlainText(text);
+}
 
 //开启、关闭调度
 void ReinovoControl::fopen_dispatch()
@@ -70,9 +77,10 @@ void ReinovoControl::fopen_dispatch()
  */
 void ReinovoControl::doneCb(const actionlib::SimpleClientGoalState& state, const oryxbot_msgs::centerResultConstPtr& result)
 {
-    ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"调度已完成");
+    emit AppendText(QString::fromStdString(get_time())+"调度已完成");
     ui->start_dispatch->setText("开始调度");
     dispatch_status = 0;
+
     //  QScrollBar *scrollbar = ui->dispatch_output->verticalScrollBar();
     //  if (scrollbar)
     //  {
@@ -85,7 +93,7 @@ void ReinovoControl::doneCb(const actionlib::SimpleClientGoalState& state, const
  */
 void ReinovoControl::activeCb()
 {
-    ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"启动完成");
+    emit AppendText(QString::fromStdString(get_time())+"启动完成");
 }
 
 /*
@@ -93,8 +101,8 @@ void ReinovoControl::activeCb()
  */
 void ReinovoControl::feedbackCb(const oryxbot_msgs::centerFeedbackConstPtr& feedback)
 {
-
-    ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+QString::fromStdString(feedback->message.c_str()));
+    emit AppendText(QString::fromStdString(get_time())+QString::fromStdString(feedback->message.c_str()));
+    // ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+QString::fromStdString(feedback->message.c_str()));
     // ui->dispatch_output->moveCursor(QTextCursor::End);
 }
 
@@ -106,6 +114,7 @@ void ReinovoControl::actionclient()
     client.sendGoal(goal,boost::bind(&ReinovoControl::doneCb, this, _1, _2),
                 boost::bind(&ReinovoControl::activeCb, this),
                 boost::bind(&ReinovoControl::feedbackCb, this, _1));
+    ros::spin();
 }
 
 
@@ -115,13 +124,21 @@ void ReinovoControl::actionclient()
 void ReinovoControl::fstart_dispatch()
 {
     if(flag_dispatch  == 1 && dispatch_status == 0){
-        actionclient();
+        //actionthread = boost::thread(boost::bind(&ReinovoControl::actionclient, this));
+        client.waitForServer();
+        oryxbot_msgs::centerGoal goal;
+        goal.point_number = 0;
+        client.sendGoal(goal,boost::bind(&ReinovoControl::doneCb, this, _1, _2),
+                    boost::bind(&ReinovoControl::activeCb, this),
+                    boost::bind(&ReinovoControl::feedbackCb, this, _1));
+        
         ui->start_dispatch->setText("停止调度");
         dispatch_status = 1;
         ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"开始调度");
     }else if(flag_dispatch  == 1 && dispatch_status == 1){
-        client.cancelAllGoals();
         // actionthread.interrupt();
+        client.cancelAllGoals();
+
         ui->start_dispatch->setText("开始调度");
         dispatch_status = 0;
         ui->dispatch_output->appendPlainText(QString::fromStdString(get_time())+"停止调度");

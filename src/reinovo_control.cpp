@@ -95,10 +95,8 @@ void ReinovoControl::tabwidget(int index)
         /* code for True */
     }else if (index == 3)
     {
-        arm_refresh();
+        // arm_refresh();
     }
-    
-    
 }
 
 
@@ -129,7 +127,7 @@ ReinovoControl::ReinovoControl(QWidget* parent):rviz::Panel(parent),ui(new Ui::F
     teach_init();
 
     //arm
-    arm_init();
+    // arm_init();
 
     //组合
     combin_init();

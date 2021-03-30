@@ -20,7 +20,6 @@
 #include <arm_controller/PickPlace.h>
 #include <arm_controller/move.h>
 #include "oryxbot_msgs/centerAction.h"
-#include <oryxbot_msgs/nav_goal.h>
 #include <oryxbot_msgs/set_zero.h>
 #include <oryxbot_msgs/SetCharge.h>
 #include <oryxbot_msgs/SetRelativeMove.h>
@@ -30,6 +29,8 @@
 #include <reinovo_control/path.h>
 #include <reinovo_control/nav_goal.h>
 #include <reinovo_control/task.h>
+#include <reinovo_control/goto_navgoal.h>
+
 
 typedef actionlib::SimpleActionServer<oryxbot_msgs::centerAction> center_server;
 
@@ -337,7 +338,7 @@ CENTRALCONTROLLING::CENTRALCONTROLLING():centerserver(nh,"center_server",boost::
     suspend=0;
     server_suspend=nh.advertiseService("center_suspend",&CENTRALCONTROLLING::suspend_callback,this);
 
-    client_nav  =nh.serviceClient<oryxbot_msgs::nav_goal>("oryxbot_navgoali");//导航
+    client_nav =  nh.serviceClient<reinovo_control::goto_navgoal>("goto_pose");//导航
     cilent_pick =nh.serviceClient<arm_controller::PickPlace>("pick_ar");//1.抓取放置	5
     client_charging =nh.serviceClient<oryxbot_msgs::SetCharge>("goto_charge");//2.自动回冲	1
     client_relativemove =nh.serviceClient<oryxbot_msgs::SetRelativeMove>("relative_move");//3.定向移动	2
@@ -460,10 +461,11 @@ void CENTRALCONTROLLING::execute(const oryxbot_msgs::centerGoalConstPtr &goal, c
     {
         feedback.message="即将要去导航点 ：" + cur_path.navgoal[i].navgoal.name;
         as->publishFeedback(feedback);//导航成功返回
-        oryxbot_msgs::nav_goal srv;
-        srv.request.pose.x  =   cur_path.navgoal[i].navgoal.pose.x;
-        srv.request.pose.y  =   cur_path.navgoal[i].navgoal.pose.y;
-        srv.request.pose.theta  =   cur_path.navgoal[i].navgoal.pose.theta;
+
+        reinovo_control::goto_navgoal srv;
+        srv.request.nav_goal.pose.x  =   cur_path.navgoal[i].navgoal.pose.x;
+        srv.request.nav_goal.pose.y  =   cur_path.navgoal[i].navgoal.pose.y;
+        srv.request.nav_goal.pose.theta  =   cur_path.navgoal[i].navgoal.pose.theta;
         if(client_nav.call(srv))
         {
             suspend=~srv.response.success;

@@ -32,22 +32,18 @@ task:
     param_name: [mode, relative_move]
   - name: pick_ar
     number: 5
-    param: !!python/tuple [4.0, 0.0, 20.0, -240.0, 60.0]
+    param: !!python/tuple [4.0, 0.0, 40.0, -230.0, 55.0]
     param_name: [number, mode, position0, position1, position2]
   - name: goto_position
     number: 3
-    param: !!python/tuple [35.0, -170.0, 150.0]
+    param: !!python/tuple [140.0, 113.0, 110.0]
     param_name: [x, y, z]
-  - name: pick_ar
-    number: 5
-    param: !!python/tuple [2.0, 1.0, 6.0, 210.0, 40.0]
-    param_name: [number, mode, position0, position1, position2]
   - name: relative_move
     number: 2
     param: !!python/tuple [0.0, -0.4000000059604645]
     param_name: [mode, relative_move]
   name: cnc11
-  step: 6
+  step: 5
 - action:
   - name: Track
     number: 1
@@ -59,22 +55,18 @@ task:
     param_name: [mode, relative_move]
   - name: pick_ar
     number: 5
-    param: !!python/tuple [3.0, 0.0, 20.0, -240.0, 60.0]
+    param: !!python/tuple [3.0, 0.0, 40.0, -230.0, 55.0]
     param_name: [number, mode, position0, position1, position2]
   - name: goto_position
     number: 3
-    param: !!python/tuple [35.0, -170.0, 150.0]
+    param: !!python/tuple [140.0, 113.0, 110.0]
     param_name: [x, y, z]
-  - name: pick_ar
-    number: 5
-    param: !!python/tuple [1.0, 1.0, 52.0, 164.0, 36.0]
-    param_name: [number, mode, position0, position1, position2]
   - name: relative_move
     number: 2
     param: !!python/tuple [0.0, -0.4000000059604645]
     param_name: [mode, relative_move]
   name: cnc21
-  step: 6
+  step: 5
 - action:
   - name: Track
     number: 1
@@ -84,24 +76,20 @@ task:
     number: 2
     param: !!python/tuple [0.0, 0.15000000596046448]
     param_name: [mode, relative_move]
-  - name: pick_ar
-    number: 5
-    param: !!python/tuple [2.0, 0.0, 60.0, -220.0, 50.0]
-    param_name: [number, mode, position0, position1, position2]
   - name: goto_position
     number: 3
-    param: !!python/tuple [40.0, -170.0, 150.0]
+    param: !!python/tuple [52.0, -173.0, 160.0]
     param_name: [x, y, z]
   - name: pick_ar
     number: 5
-    param: !!python/tuple [4.0, 1.0, 6.0, 210.0, 40.0]
+    param: !!python/tuple [4.0, 1.0, 50.0, 217.0, 45.0]
     param_name: [number, mode, position0, position1, position2]
   - name: relative_move
     number: 2
     param: !!python/tuple [0.0, -0.4000000059604645]
     param_name: [mode, relative_move]
   name: cnc12
-  step: 6
+  step: 5
 - action:
   - name: Track
     number: 1
@@ -111,24 +99,20 @@ task:
     number: 2
     param: !!python/tuple [0.0, 0.15000000596046448]
     param_name: [mode, relative_move]
-  - name: pick_ar
-    number: 5
-    param: !!python/tuple [1.0, 0.0, 60.0, -220.0, 40.0]
-    param_name: [number, mode, position0, position1, position2]
   - name: goto_position
     number: 3
-    param: !!python/tuple [40.0, -170.0, 150.0]
+    param: !!python/tuple [52.0, -173.0, 160.0]
     param_name: [x, y, z]
   - name: pick_ar
     number: 5
-    param: !!python/tuple [3.0, 1.0, 52.0, 164.0, 36.0]
+    param: !!python/tuple [3.0, 1.0, 50.0, 171.0, 39.0]
     param_name: [number, mode, position0, position1, position2]
   - name: relative_move
     number: 2
     param: !!python/tuple [0.0, -0.4000000059604645]
     param_name: [mode, relative_move]
   name: cnc22
-  step: 6
+  step: 5
 - action:
   - name: set_zero
     number: 4
@@ -168,3 +152,10 @@ task:
     param_name: [track]
   name: test1
   step: 9
+- action:
+  - name: sleep
+    number: 1
+    param: !!python/tuple [2.0]
+    param_name: [time]
+  name: sleep1
+  step: 1

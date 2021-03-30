@@ -3,6 +3,7 @@ project(reinovo_control)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
  add_compile_options(-std=c++11)
+# 设置自动生成ui.h文件,AUTOUIC打开可以省去QT5_WRAP_UI命令
  set(CMAKE_AUTOMOC ON)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -211,6 +212,7 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
+#通过Ui文件生成对应的头文件，一定要添加
 QT5_WRAP_UI(ui_header src/mainwindow.ui)
 set(reinovo_SRCS
     ${ui_header}
@@ -227,9 +229,11 @@ set(reinovo_SRCS
     src/file.h
     src/file.cpp
 )
+#添加库
  add_library(reinovo_control
     ${reinovo_SRCS}
  )
+#添加Qt5依赖项
  target_link_libraries(reinovo_control
    ${catkin_LIBRARIES}
    ${QT_LIBREARIES}

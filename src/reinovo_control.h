@@ -203,7 +203,9 @@ public slots:
     void frefresh_path1();      //刷新路径
     void fload_path1();         //加载路径
     void fauto_charging();      //自动充电
-
+    void fSlotAppendText(const QString &text);
+signals:
+    void AppendText(const QString &text);
 
 
 
