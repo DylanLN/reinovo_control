@@ -47,7 +47,7 @@ class BootomLayer
 {
 public:
     BootomLayer();
-    //virtual ~BootomLayer();
+    virtual ~BootomLayer();
 
 public:
     //data
@@ -532,6 +532,12 @@ BootomLayer::BootomLayer()
 
     navclient = new MoveBaseClient ("move_base", true);
 
+}
+
+BootomLayer::~BootomLayer()
+{
+    //kill所有 blank
+    system("killall blank");
 }
 
 int main(int argc, char** argv)

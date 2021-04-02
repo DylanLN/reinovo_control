@@ -40,7 +40,9 @@ Panels:
     Property Tree Widget:
       Expanded: ~
       Splitter Ratio: 0.5
-    Tree Height: 415
+    Tree Height: 579
+Toolbars:
+  toolButtonStyle: 2
 Visualization Manager:
   Class: ""
   Displays:
@@ -62,17 +64,76 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
+    - Class: rviz/TF
+      Enabled: false
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: false
+      Tree:
+        {}
+      Update Interval: 0
+      Value: false
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
       Enabled: true
       Links:
         All Links Enabled: true
+        Base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        arm_base_link:
+        Link1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Link2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Link3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Link4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Link5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Link6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Link7:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Link8:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Link9:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -98,26 +159,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         laser_radar_Link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_6:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -287,11 +328,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        tool_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         wheel_1_Link:
           Alpha: 1
           Show Axes: false
@@ -318,20 +354,6 @@ Visualization Manager:
       Update Interval: 0
       Value: true
       Visual Enabled: true
-    - Class: rviz/TF
-      Enabled: false
-      Frame Timeout: 15
-      Frames:
-        All Enabled: false
-      Marker Scale: 1
-      Name: TF
-      Show Arrows: true
-      Show Axes: true
-      Show Names: false
-      Tree:
-        {}
-      Update Interval: 0
-      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -741,5 +763,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1301
-  X: 65
-  Y: 24
+  X: 1425
+  Y: 328

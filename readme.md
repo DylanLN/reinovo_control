@@ -5,7 +5,9 @@
 
 ### 2021.3.30-v1.2
 修复调度中由于QPlainTextEdit不可在多线程中调用导致卡死
+
 添加部分功能
+
 已相对稳定可用
 
 ### 2020.12.8-v1.1
@@ -32,6 +34,18 @@ catkin_make
 roscd reinovo_control/icon/
 sudo sh install.sh
 ```
+
+有时候会报一些警告,是urdf的错误
+```bash
+[ WARN] [1589780336.123195128, 85.771000000]: The STL file 'package://aaa/meshes/aaa_01/aaa_01.STL' is malformed. It starts with the word 'solid', indicating that it's an ASCII STL file, but it does not contain the word 'endsolid' so it is either a malformed ASCII STL file or it is actually a binary STL file. Trying to interpret it as a binary STL file instead.
+```
+需要运行这一句指令
+```bash
+sed -i 's/^solid/dilos/' ~/oryxbot2_ws/src/oryxbot_description/urdf/pro_links/*
+```
+其中~/oryxbot2_ws/src/oryxbot_description是功能包所在路径,
+需要将此路径修改为你的oryxbot_description功能包的路径
+
 ## 打开ui
 
 ​    机器人端:
