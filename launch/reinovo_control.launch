@@ -13,6 +13,17 @@
 	</node>
 	<node name="swiftpro_rviz_node" pkg="oryxbot_description" type="swiftpro_rviz_node" />
 
+	<!--<param name="robot_description" textfile="$(find oryxbot_description)/urdf/oryxbot_description.urdf" />
+
+	<node
+		name="joint_state_publisher"
+		pkg="joint_state_publisher"
+		type="joint_state_publisher" />
+	<node
+		name="robot_state_publisher"
+		pkg="robot_state_publisher"
+		type="state_publisher" />-->
+
 
 	<!-- rviz -->
 	<node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find reinovo_control)/rviz/reinovo.rviz" output="screen"/>
